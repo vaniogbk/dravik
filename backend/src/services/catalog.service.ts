@@ -262,7 +262,13 @@ export async function listCategories(locale: Locale) {
     },
   });
 
-  return categories.map((c) => ({
+  // Une catégorie sans produit visible ne doit pas figurer au menu : elle
+  // promet un rayon et mène à une page vide. Cas courant après une refonte,
+  // où d'anciennes familles subsistent le temps que leurs produits archivés
+  // gardent leur rattachement.
+  return categories
+    .filter((c) => c._count.products > 0)
+    .map((c) => ({
     id: c.id,
     canonicalSlug: c.slug,
     slug: c.translations[0]?.slug ?? c.slug,
