@@ -223,6 +223,59 @@ async function seedProduct(seed: ProductSeed, categoryIds: Map<string, string>) 
   return product;
 }
 
+/**
+ * Retire les références qui ne sont plus au catalogue.
+ *
+ * Le seed procède par upsert : sans cet élagage, les produits de l'ancienne
+ * enseigne resteraient en base après la refonte et continueraient de s'afficher
+ * en boutique.
+ *
+ * Un produit déjà commandé n'est jamais supprimé — l'historique doit rester
+ * lisible — il est seulement retiré de la vente.
+ */
+async function pruneLegacyProducts() {
+  const keep = DRAVIK_PRODUCTS.map((p) => p.sku);
+  const legacy = await prisma.product.findMany({
+    where: { sku: { notIn: keep } },
+    select: { id: true, sku: true, _count: { select: { orderItems: true } } },
+  });
+
+  if (legacy.length === 0) return;
+
+  const ordered = legacy.filter((p) => p._count.orderItems > 0);
+  const removable = legacy.filter((p) => p._count.orderItems === 0);
+
+  if (removable.length) {
+    const ids = removable.map((p) => p.id);
+    await prisma.productSpec.deleteMany({ where: { productId: { in: ids } } });
+    await prisma.productImage.deleteMany({ where: { productId: { in: ids } } });
+    await prisma.productTranslation.deleteMany({ where: { productId: { in: ids } } });
+    await prisma.stockMovement.deleteMany({ where: { productId: { in: ids } } });
+    await prisma.product.deleteMany({ where: { id: { in: ids } } });
+    console.log(`  ✔ ${removable.length} référence(s) hors catalogue supprimée(s)`);
+  }
+
+  if (ordered.length) {
+    await prisma.product.updateMany({
+      where: { id: { in: ordered.map((p) => p.id) } },
+      data: { status: 'ARCHIVED', stock: 0 },
+    });
+    console.log(`  ✔ ${ordered.length} référence(s) déjà commandée(s) archivée(s)`);
+  }
+
+  const keptCategories = CATEGORIES.map((c) => c.slug);
+  const orphans = await prisma.category.findMany({
+    where: { slug: { notIn: keptCategories }, products: { none: {} } },
+    select: { id: true },
+  });
+  if (orphans.length) {
+    const ids = orphans.map((c) => c.id);
+    await prisma.categoryTranslation.deleteMany({ where: { categoryId: { in: ids } } });
+    await prisma.category.deleteMany({ where: { id: { in: ids } } });
+    console.log(`  ✔ ${orphans.length} catégorie(s) vide(s) supprimée(s)`);
+  }
+}
+
 async function main() {
   console.log('\nSeed Dravik\n' + '─'.repeat(40));
 
@@ -234,6 +287,8 @@ async function main() {
     await seedProduct(seed, categoryIds);
   }
   console.log(`  ✔ ${DRAVIK_PRODUCTS.length} références neuves (catalogue Dravik)`);
+
+  await pruneLegacyProducts();
 
   console.log('─'.repeat(40));
   console.log(`Connexion admin : ${ADMIN_EMAIL}`);
