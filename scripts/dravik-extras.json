@@ -15,9 +15,8 @@
       "card": "scripts/dravik-extras-images/stihl-ms-500i-tronconneuse-thermique.webp"
     },
     "image_from": "repo",
-    "image_source": "Visuel d'attente Dravik — à remplacer par la photo officielle STIHL",
-    "image_status": "placeholder",
-    "check_before_publishing": "Le visuel est une vignette d'attente, pas une photo du produit.",
-    "image_placeholder": true
+    "image_source": "IA, fourni par le client — à remplacer par la photo officielle du fabricant",
+    "image_status": "ok",
+    "check_before_publishing": null
   }
 ]
