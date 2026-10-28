@@ -1,10 +1,10 @@
 export const fr = {
   meta: {
     siteName: 'Dravik',
-    tagline: 'Matériel forestier et espaces verts — neuf et occasion',
-    homeTitle: 'Dravik — tronçonneuses, débroussailleuses et outils motorisés',
+    tagline: 'Outillage professionnel et matériel de plein air — neuf',
+    homeTitle: 'Dravik — outillage professionnel, matériel de jardin et machines',
     homeDescription:
-      "Spécialiste du matériel forestier et d'espaces verts. Tronçonneuses, débroussailleuses, outils motorisés et accessoires, neufs et occasions contrôlées. Livraison en France et en Allemagne.",
+      "Bosch Professional, Makita, DeWalt, Festool, Metabo, STIHL, Husqvarna et Tormek. Outillage électroportatif, matériel de jardin et machines d'atelier, neufs et garantis. Livraison en France, Belgique, Allemagne et Autriche.",
   },
 
   nav: {

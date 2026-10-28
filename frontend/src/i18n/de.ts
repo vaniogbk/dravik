@@ -3,10 +3,10 @@ import type { Dictionary } from './fr';
 export const de: Dictionary = {
   meta: {
     siteName: 'Dravik',
-    tagline: 'Forst- und Gartentechnik — neu und gebraucht',
-    homeTitle: 'Dravik — Kettensägen, Freischneider und Motorgeräte',
+    tagline: 'Profiwerkzeug und Geräte für draußen — neu',
+    homeTitle: 'Dravik — Profiwerkzeug, Gartengeräte und Werkstattmaschinen',
     homeDescription:
-      'Spezialist für Forst- und Gartentechnik. Kettensägen, Freischneider, Motorgeräte und Zubehör, neu und geprüft gebraucht. Lieferung nach Deutschland und Frankreich.',
+      'Bosch Professional, Makita, DeWalt, Festool, Metabo, STIHL, Husqvarna und Tormek. Elektrowerkzeuge, Gartengeräte und Werkstattmaschinen, neu und mit Garantie. Lieferung nach Deutschland, Österreich, Frankreich und Belgien.',
   },
 
   nav: {
