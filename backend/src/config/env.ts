@@ -39,14 +39,8 @@ const schema = z.object({
   ADMIN_EMAIL: z.string().email().default('admin@dravik.eu'),
   ADMIN_PASSWORD: z.string().min(8).default('ChangeMoi!2026'),
 
-  // Formulaire de contact → Telegram (optionnel).
-  // Sans ces deux valeurs, le formulaire est masqué et l'adresse e-mail
-  // affichée à la place : le visiteur a toujours un moyen de vous joindre.
-  TELEGRAM_BOT_TOKEN: z.string().optional(),
-  TELEGRAM_CHAT_ID: z.string().optional(),
-
-  // Envoi d'e-mails (optionnel) : justificatifs de virement reçus et
-  // messages de suivi envoyés au client à chaque étape.
+  // Envoi d'e-mails (optionnel) : formulaire de contact, justificatifs de
+  // virement reçus et messages de suivi envoyés au client à chaque étape.
   //
   // N'importe quel SMTP convient. Sans ces valeurs, rien n'est envoyé : les
   // messages sont journalisés en base avec leur motif d'échec, et le
@@ -86,7 +80,6 @@ export const env = {
     .map((o) => o.trim())
     .filter(Boolean),
   stripeEnabled: Boolean(raw.STRIPE_SECRET_KEY),
-  telegramEnabled: Boolean(raw.TELEGRAM_BOT_TOKEN && raw.TELEGRAM_CHAT_ID),
   mailEnabled: Boolean(raw.MAIL_HOST && raw.MAIL_USER && raw.MAIL_PASSWORD && raw.MAIL_FROM),
   /** Boîte de la boutique : MAIL_TO_SHOP, à défaut l'expéditeur. */
   shopMailbox: raw.MAIL_TO_SHOP || raw.MAIL_USER || '',

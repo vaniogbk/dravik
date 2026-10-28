@@ -158,9 +158,9 @@ Vos données sont transmises uniquement à nos sous-traitants, dans la stricte m
 - **Railway Corp.** (États-Unis) — hébergement applicatif et base de données
 - **Vercel Inc.** (États-Unis) — hébergement du site
 - **Transporteurs** (DPD, DHL, Chronopost, GLS, DB Schenker) — nom, adresse et téléphone, aux seules fins de livraison
-- **Telegram FZ-LLC** (Émirats arabes unis) — les messages envoyés depuis le formulaire de contact nous sont transmis par Telegram. N'y indiquez aucune donnée sensible : pour ces sujets, écrivez-nous directement par e-mail.
+- **Notre hébergeur de messagerie** — les messages envoyés depuis le formulaire de contact nous parviennent par courrier électronique. N’y indiquez aucune donnée sensible.
 
-Les transferts vers les États-Unis et les Émirats arabes unis sont encadrés par les **clauses contractuelles types** de la Commission européenne.
+Les transferts vers les États-Unis sont encadrés par les **clauses contractuelles types** de la Commission européenne.
 
 Nous ne vendons ni ne louons vos données à des tiers.
 
@@ -322,9 +322,9 @@ Ihre Daten werden ausschließlich an unsere Auftragsverarbeiter übermittelt, un
 - **Railway Corp.** (USA) — Anwendungs- und Datenbank-Hosting
 - **Vercel Inc.** (USA) — Website-Hosting
 - **Versanddienstleister** (DHL, DPD, Chronopost, GLS, DB Schenker) — Name, Adresse und Telefon, ausschließlich zur Zustellung
-- **Telegram FZ-LLC** (Vereinigte Arabische Emirate) — Nachrichten aus dem Kontaktformular werden uns über Telegram zugestellt. Geben Sie dort keine sensiblen Daten an; schreiben Sie uns dafür direkt per E-Mail.
+- **Unser E-Mail-Anbieter** — Nachrichten aus dem Kontaktformular erreichen uns per E-Mail. Geben Sie dort keine sensiblen Daten an.
 
-Übermittlungen in die USA und in die Vereinigten Arabischen Emirate erfolgen auf Grundlage der **Standardvertragsklauseln** der Europäischen Kommission.
+Übermittlungen in die USA erfolgen auf Grundlage der **Standardvertragsklauseln** der Europäischen Kommission.
 
 Wir verkaufen oder vermieten Ihre Daten nicht an Dritte.
 

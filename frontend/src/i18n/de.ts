@@ -270,7 +270,7 @@ export const de: Dictionary = {
     directFallback:
       'Das Formular ist vorübergehend nicht verfügbar. Unsere Kontaktdaten finden Sie im',
     privacyNote:
-      'Die eingegebenen Daten dienen ausschließlich der Bearbeitung Ihrer Anfrage. Sie werden über Telegram an unser Team übermittelt und zu keinem anderen Zweck verwendet.',
+      'Die eingegebenen Daten dienen ausschließlich der Bearbeitung Ihrer Anfrage. Sie werden per E-Mail an unser Team übermittelt und zu keinem anderen Zweck verwendet.',
   },
 
   tracking: {

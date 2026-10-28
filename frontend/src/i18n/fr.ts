@@ -269,7 +269,7 @@ export const fr = {
     directFallback:
       'Le formulaire est momentanément indisponible. Nos coordonnées figurent dans les',
     privacyNote:
-      'Les informations saisies servent uniquement à traiter votre demande. Elles sont transmises à notre équipe via Telegram et ne sont utilisées à aucune autre fin.',
+      'Les informations saisies servent uniquement à traiter votre demande. Elles sont transmises à notre équipe par courrier électronique et ne sont utilisées à aucune autre fin.',
   },
 
   tracking: {

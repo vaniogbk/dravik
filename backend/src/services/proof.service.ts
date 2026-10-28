@@ -4,7 +4,6 @@ import { logger } from '../lib/logger.js';
 import { env } from '../config/env.js';
 import { ApiError } from '../lib/errors.js';
 import * as mail from './mail.service.js';
-import * as contact from './contact.service.js';
 import * as notify from './order-notify.service.js';
 
 /**
@@ -65,8 +64,8 @@ export interface SubmitInput {
 export interface SubmitResult {
   fileName: string;
   sizeBytes: number;
-  /** La boutique a-t-elle été prévenue, et par quel canal. */
-  shopNotified: { email: boolean; telegram: boolean };
+  /** La boutique a-t-elle été prévenue. */
+  shopNotified: boolean;
   /** Étape de suivi atteinte, et avis au client. */
   stage: notify.NotifyResult | null;
 }
@@ -115,7 +114,7 @@ export async function submitProof(input: SubmitInput): Promise<SubmitResult> {
 
   const shopNotified = await notifyShop({ order, fileName, contentType, data, submittedBy });
 
-  if (shopNotified.email || shopNotified.telegram) {
+  if (shopNotified) {
     await prisma.transferProof.update({
       where: { id: proof.id },
       data: { notified: true },
@@ -127,7 +126,7 @@ export async function submitProof(input: SubmitInput): Promise<SubmitResult> {
   const stage = await enterPreparation(order);
 
   logger.info(
-    { orderNumber: order.orderNumber, sizeBytes: data.length, ...shopNotified },
+    { orderNumber: order.orderNumber, sizeBytes: data.length, shopNotified },
     'Justificatif de virement reçu',
   );
 
@@ -147,17 +146,30 @@ async function enterPreparation(order: Order): Promise<notify.NotifyResult | nul
   return notify.notifyStage(order, 'PREPARING');
 }
 
-/** Avis à la boutique : e-mail avec la pièce jointe, et Telegram en doublon. */
+/**
+ * Avis à la boutique, avec le justificatif en pièce jointe.
+ *
+ * Un échec ne fait pas échouer le dépôt : le fichier est déjà en base et
+ * reste consultable depuis le back-office. `notified` dit ce qu'il en est.
+ */
 async function notifyShop(input: {
   order: Order;
   fileName: string;
   contentType: string;
   data: Buffer;
   submittedBy: string;
-}): Promise<{ email: boolean; telegram: boolean }> {
+}): Promise<boolean> {
   const { order, fileName, contentType, data, submittedBy } = input;
   const amount = (order.totalCents / 100).toFixed(2).replace('.', ',');
   const url = notify.trackingUrl(order);
+
+  if (!mail.enabled() || !env.shopMailbox) {
+    logger.warn(
+      { orderNumber: order.orderNumber },
+      "Justificatif reçu mais aucun avis envoyé : l'envoi d'e-mails n'est pas configuré",
+    );
+    return false;
+  }
 
   const lines = [
     `Commande : ${order.orderNumber}`,
@@ -172,33 +184,22 @@ async function notifyShop(input: {
     'depuis le relevé bancaire avant de marquer la commande « En route ».',
   ];
 
-  let email = false;
-  if (mail.enabled() && env.shopMailbox) {
-    try {
-      await mail.send({
-        to: env.shopMailbox,
-        replyTo: order.email,
-        subject: `Justificatif de virement — ${order.orderNumber} (${amount} ${order.currency})`,
-        text: lines.join('\n'),
-        html: `<pre style="font:14px/1.6 ui-monospace,SFMono-Regular,Menlo,monospace;white-space:pre-wrap;">${mail.escapeHtml(
-          lines.join('\n'),
-        )}</pre>`,
-        attachments: [{ filename: fileName, content: data, contentType }],
-      });
-      email = true;
-    } catch (err) {
-      logger.error({ err, orderNumber: order.orderNumber }, "Avis de justificatif non envoyé par e-mail");
-    }
+  try {
+    await mail.send({
+      to: env.shopMailbox,
+      replyTo: order.email,
+      subject: `Justificatif de virement — ${order.orderNumber} (${amount} ${order.currency})`,
+      text: lines.join('\n'),
+      html: `<pre style="font:14px/1.6 ui-monospace,SFMono-Regular,Menlo,monospace;white-space:pre-wrap;">${mail.escapeHtml(
+        lines.join('\n'),
+      )}</pre>`,
+      attachments: [{ filename: fileName, content: data, contentType }],
+    });
+    return true;
+  } catch (err) {
+    logger.error({ err, orderNumber: order.orderNumber }, "Avis de justificatif non envoyé");
+    return false;
   }
-
-  const telegram = await contact.sendShopDocument({
-    caption: `<b>💶 Justificatif de virement</b>\n<code>${order.orderNumber}</code> — ${amount} ${order.currency}\n${order.email}`,
-    fileName,
-    contentType,
-    data,
-  });
-
-  return { email, telegram };
 }
 
 /** Liste des justificatifs d'une commande, sans les octets. */

@@ -2,14 +2,13 @@ import { Router } from 'express';
 import rateLimit from 'express-rate-limit';
 import { z } from 'zod';
 import { asyncHandler, validate } from '../middleware/validate.js';
-import { env } from '../config/env.js';
 import { logger } from '../lib/logger.js';
 import * as contact from '../services/contact.service.js';
 
 export const contactRouter = Router();
 
 /**
- * Un formulaire qui alimente une conversation Telegram est une cible de choix
+ * Un formulaire qui alimente une boîte aux lettres est une cible de choix
  * pour les robots : sans limite, la boîte du commerçant devient inutilisable.
  * Trois messages par quart d'heure et par adresse IP suffisent largement à un
  * usage légitime.
@@ -47,7 +46,7 @@ const contactSchema = z.object({
 
 /** Indique au frontend s'il doit afficher le formulaire ou l'adresse e-mail. */
 contactRouter.get('/', (_req, res) => {
-  res.json({ formEnabled: env.telegramEnabled });
+  res.json({ formEnabled: contact.contactEnabled() });
 });
 
 contactRouter.post(

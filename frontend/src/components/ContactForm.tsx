@@ -68,7 +68,7 @@ export function ContactForm({ locale }: { locale: Locale }) {
     return <div className="skeleton mt-10 h-96 rounded-card" />;
   }
 
-  // Sans Telegram configuré, la page contact serait vide : on affiche les
+  // Sans envoi d'e-mails configuré, la page contact serait vide : on affiche les
   // coordonnées directes à la place. Si elles ne sont pas non plus renseignées,
   // on renvoie vers les mentions légales, où elles sont obligatoires.
   if (!enabled) return <DirectContact locale={locale} />;

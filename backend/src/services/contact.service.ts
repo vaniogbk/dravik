@@ -1,16 +1,17 @@
 import { env } from '../config/env.js';
 import { logger } from '../lib/logger.js';
 import { ApiError } from '../lib/errors.js';
+import * as mail from './mail.service.js';
 
 /**
- * Formulaire de contact → Telegram.
+ * Formulaire de contact → boîte de la boutique.
  *
- * Les messages arrivent dans une conversation Telegram plutôt que par e-mail :
- * la notification est immédiate sur le téléphone, et il n'y a aucun serveur
- * SMTP à maintenir.
+ * Les demandes arrivent dans la boîte où on y répond, et répondre se fait
+ * d'un clic grâce à `replyTo`.
  *
- * Le jeton du bot ne quitte jamais le serveur. Le navigateur ne connaît que
- * l'existence, ou non, du formulaire.
+ * Sans configuration SMTP, le formulaire est masqué et l'adresse e-mail
+ * affichée à la place : le visiteur a toujours un moyen de joindre la
+ * boutique.
  */
 
 export interface ContactMessage {
@@ -22,86 +23,29 @@ export interface ContactMessage {
   locale: 'fr' | 'de';
 }
 
-/**
- * Échappe les caractères réservés du mode HTML de Telegram.
- * Sans cela, un message contenant « <b> » casserait le rendu, et un visiteur
- * malveillant pourrait injecter du balisage dans votre conversation.
- */
-function escapeHtml(value: string): string {
-  return value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-}
+/** Le formulaire ne s'affiche que si la boutique peut recevoir les messages. */
+export const contactEnabled = () => mail.enabled() && Boolean(env.shopMailbox);
 
-/** Telegram refuse les messages de plus de 4096 caractères. */
-const MAX_TELEGRAM_LENGTH = 3800;
-
-function formatMessage(input: ContactMessage): string {
-  const flag = input.locale === 'de' ? '🇩🇪' : '🇫🇷';
-
+function body(input: ContactMessage): { text: string; html: string } {
   const lines = [
-    `<b>🔔 Nouveau message — Dravik</b> ${flag}`,
+    `De : ${input.name} <${input.email}>`,
+    `Langue : ${input.locale === 'de' ? 'allemand' : 'français'}`,
+    ...(input.orderNumber ? [`Commande : ${input.orderNumber}`] : []),
+    `Sujet : ${input.subject}`,
     '',
-    `<b>De :</b> ${escapeHtml(input.name)}`,
-    `<b>E-mail :</b> ${escapeHtml(input.email)}`,
+    input.message,
   ];
 
-  if (input.orderNumber) {
-    lines.push(`<b>Commande :</b> <code>${escapeHtml(input.orderNumber)}</code>`);
-  }
-
-  lines.push(`<b>Sujet :</b> ${escapeHtml(input.subject)}`, '', escapeHtml(input.message));
-
   const text = lines.join('\n');
-  return text.length > MAX_TELEGRAM_LENGTH
-    ? `${text.slice(0, MAX_TELEGRAM_LENGTH)}\n\n[…message tronqué]`
-    : text;
-}
+  const html = `<pre style="font:14px/1.6 ui-monospace,SFMono-Regular,Menlo,monospace;white-space:pre-wrap;">${mail.escapeHtml(
+    text,
+  )}</pre>`;
 
-/**
- * Envoie un document dans la conversation Telegram de la boutique.
- *
- * Utilisé pour les justificatifs de virement : la pièce arrive sur le
- * téléphone en même temps que l'avis, sans attendre une connexion au
- * back-office. Ne lève pas — c'est un canal d'appoint, pas le canal de
- * référence, et son échec ne doit pas faire échouer le dépôt du client.
- */
-export async function sendShopDocument(input: {
-  caption: string;
-  fileName: string;
-  contentType: string;
-  data: Buffer;
-}): Promise<boolean> {
-  if (!env.telegramEnabled) return false;
-
-  const form = new FormData();
-  form.append('chat_id', env.TELEGRAM_CHAT_ID!);
-  // Telegram tronque les légendes au-delà de 1024 caractères.
-  form.append('caption', input.caption.slice(0, 1000));
-  form.append('parse_mode', 'HTML');
-  form.append(
-    'document',
-    new Blob([new Uint8Array(input.data)], { type: input.contentType }),
-    input.fileName,
-  );
-
-  try {
-    const response = await fetch(
-      `https://api.telegram.org/bot${env.TELEGRAM_BOT_TOKEN}/sendDocument`,
-      { method: 'POST', body: form, signal: AbortSignal.timeout(30_000) },
-    );
-    if (!response.ok) {
-      const detail = await response.text().catch(() => '');
-      logger.warn({ status: response.status, detail }, 'Telegram a refusé le document');
-      return false;
-    }
-    return true;
-  } catch (err) {
-    logger.warn({ err }, 'Telegram injoignable pour le document');
-    return false;
-  }
+  return { text, html };
 }
 
 export async function sendContactMessage(input: ContactMessage): Promise<void> {
-  if (!env.telegramEnabled) {
+  if (!contactEnabled()) {
     throw new ApiError(
       503,
       'CONTACT_NOT_CONFIGURED',
@@ -109,37 +53,23 @@ export async function sendContactMessage(input: ContactMessage): Promise<void> {
     );
   }
 
-  const url = `https://api.telegram.org/bot${env.TELEGRAM_BOT_TOKEN}/sendMessage`;
+  const { text, html } = body(input);
 
-  let response: Response;
   try {
-    response = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        chat_id: env.TELEGRAM_CHAT_ID,
-        text: formatMessage(input),
-        parse_mode: 'HTML',
-        // Les aperçus de liens transformeraient chaque URL citée par un
-        // visiteur en vignette dans votre conversation.
-        disable_web_page_preview: true,
-      }),
-      signal: AbortSignal.timeout(10_000),
+    await mail.send({
+      to: env.shopMailbox,
+      // Répondre au message répond au visiteur, pas à la boutique.
+      replyTo: `${input.name} <${input.email}>`,
+      subject: input.orderNumber
+        ? `Contact — ${input.subject} (${input.orderNumber})`
+        : `Contact — ${input.subject}`,
+      text,
+      html,
     });
   } catch (err) {
-    logger.error({ err }, 'Telegram injoignable');
-    throw new ApiError(
-      502,
-      'CONTACT_DELIVERY_FAILED',
-      "Votre message n'a pas pu être transmis. Réessayez, ou écrivez-nous par e-mail.",
-    );
-  }
-
-  if (!response.ok) {
-    // La réponse d'erreur de Telegram contient le motif exact (jeton invalide,
-    // conversation inconnue…) : elle est journalisée, jamais renvoyée au client.
-    const detail = await response.text().catch(() => '');
-    logger.error({ status: response.status, detail }, 'Telegram a refusé le message');
+    // Le détail de l'échec SMTP (identifiants, quota, destinataire refusé)
+    // est journalisé, jamais renvoyé au visiteur.
+    logger.error({ err, from: input.email }, 'Message de contact non transmis');
     throw new ApiError(
       502,
       'CONTACT_DELIVERY_FAILED',

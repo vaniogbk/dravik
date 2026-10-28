@@ -5,10 +5,9 @@ import { logger } from '../lib/logger.js';
 /**
  * Envoi d'e-mails par SMTP.
  *
- * Le formulaire de contact passe par Telegram — pas de serveur à maintenir,
- * notification immédiate. Mais un client ne lit pas votre Telegram : les
- * messages de suivi doivent arriver dans sa boîte, et le justificatif de
- * virement dans la vôtre, avec la pièce jointe. D'où ce second canal.
+ * Canal unique de la boutique : formulaire de contact, justificatif de
+ * virement reçu avec sa pièce jointe, et messages de suivi envoyés au
+ * client à chaque étape.
  *
  * Sans configuration SMTP, `enabled` vaut false et rien n'est envoyé.
  * L'appelant est tenu d'en faire état plutôt que de laisser croire à un

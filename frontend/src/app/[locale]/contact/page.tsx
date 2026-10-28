@@ -20,7 +20,7 @@ export function generateMetadata({ params }: { params: { locale: Locale } }): Me
 /**
  * La page contact se réduit au formulaire : les coordonnées détaillées vivent
  * dans les mentions légales, où elles sont obligatoires. Le composant gère le
- * repli lorsque Telegram n'est pas configuré.
+ * repli lorsque l'envoi d'e-mails n'est pas configuré.
  */
 export default function ContactPage({ params }: { params: { locale: Locale } }) {
   const page = PAGES[params.locale][KEY];
