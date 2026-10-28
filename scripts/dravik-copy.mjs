@@ -1,5 +1,5 @@
 /**
- * Spécifications et accroches des 48 références Dravik, en français et en
+ * Spécifications et accroches des références Dravik, en français et en
  * allemand.
  *
  * Séparé du générateur pour que la rédaction se relise seule, sans la
@@ -312,5 +312,12 @@ export const COPY = {
     specsDe: [['Motor', 'Briggs & Stratton, 500 cm³'], ['Schnittbreite', '97 cm'], ['Fangkorb', '200 L'], ['Getriebe', 'Hydrostatisch']],
     fr: 'Tracteur tondeuse à transmission hydrostatique : la vitesse se règle à la pédale, sans lâcher le volant.',
     de: 'Aufsitzmäher mit Hydrostat: Die Geschwindigkeit regelt das Pedal, ohne das Lenkrad loszulassen.',
+  },
+  // --------------------------------------- hors fichier d'identité (extras)
+  'DRV-049': {
+    specs: [['Cylindrée', '79,2 cm³'], ['Puissance', '5,0 kW (6,8 ch)'], ['Guide', '63 cm'], ['Poids à vide', '6,2 kg']],
+    specsDe: [['Hubraum', '79,2 cm³'], ['Leistung', '5,0 kW (6,8 PS)'], ['Schiene', '63 cm'], ['Leergewicht', '6,2 kg']],
+    fr: "Première tronçonneuse à injection électronique : ni starter ni valve de décompression, un coup de lanceur suffit, à froid comme en altitude. 5 kW pour 6,2 kg, soit 1,24 kg/kW.",
+    de: 'Die erste Kettensäge mit elektronischer Kraftstoffeinspritzung: kein Choke, kein Dekompressionsventil, ein Zug am Starterseil genügt — kalt wie in Höhenlagen. 5 kW bei 6,2 kg, also 1,24 kg/kW.',
   },
 };

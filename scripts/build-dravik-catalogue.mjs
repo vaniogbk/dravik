@@ -3,6 +3,7 @@
  * Construit le catalogue Dravik à partir de trois sources séparées :
  *
  *   • DRAVIK/catalogue/products.json  — référence, marque, modèle, images
+ *   • scripts/dravik-extras.json      — références ajoutées après la livraison
  *   • scripts/dravik-prix.csv         — prix, stock, poids, mise en avant
  *   • scripts/dravik-copy.mjs         — spécifications et accroches FR/DE
  *
@@ -34,9 +35,31 @@ const OUT_IMG = resolve(ROOT, 'frontend/public/produits/dravik');
 
 // --------------------------------------------------------------- lecture
 
+/**
+ * Le fichier d'identité est livré une fois et ne bouge plus ; les références
+ * ajoutées ensuite vivent dans le dépôt, avec le même format. Leurs visuels se
+ * résolvent depuis la racine du dépôt (`image_from: 'repo'`) et non depuis le
+ * dossier d'identité, qui ne les contient pas.
+ */
 function readProducts() {
-  return JSON.parse(readFileSync(resolve(SOURCE, 'catalogue/products.json'), 'utf8'));
+  const base = JSON.parse(readFileSync(resolve(SOURCE, 'catalogue/products.json'), 'utf8'));
+  const extrasPath = resolve(ROOT, 'scripts/dravik-extras.json');
+  const extras = existsSync(extrasPath) ? JSON.parse(readFileSync(extrasPath, 'utf8')) : [];
+
+  const seen = new Map(base.map((p) => [p.id, 'identité']));
+  for (const p of extras) {
+    const from = seen.get(p.id);
+    if (from) {
+      console.error(`Référence en double : ${p.id} est déjà dans le fichier d'${from}.`);
+      process.exit(1);
+    }
+    seen.set(p.id, 'extras');
+  }
+  return [...base, ...extras];
 }
+
+/** Dossier d'où partir pour retrouver le visuel d'une référence. */
+const imageRoot = (product) => (product.image_from === 'repo' ? ROOT : resolve(SOURCE, 'catalogue'));
 
 /** Le CSV est séparé par des points-virgules et peut porter un BOM. */
 function readPrices() {
@@ -210,7 +233,7 @@ mkdirSync(OUT_IMG, { recursive: true });
 let copied = 0;
 let absent = 0;
 for (const p of products) {
-  const from = resolve(SOURCE, 'catalogue', p.images.large);
+  const from = resolve(imageRoot(p), p.images.large);
   if (existsSync(from)) {
     copyFileSync(from, resolve(OUT_IMG, `${p.slug}.webp`));
     copied++;
@@ -225,7 +248,7 @@ const blocks = products.map((p) => emit(p, prices.get(p.id), COPY[p.id])).join('
 const file = `import type { ProductSeed } from './types.js';
 
 /**
- * Catalogue Dravik : 48 références neuves, huit marques.
+ * Catalogue Dravik : ${products.length} références neuves, huit marques.
  *
  * Fichier GÉNÉRÉ par scripts/build-dravik-catalogue.mjs — ne pas modifier à la
  * main. Les prix se corrigent dans scripts/dravik-prix.csv, la rédaction dans

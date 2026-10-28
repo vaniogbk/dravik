@@ -1,7 +1,7 @@
 import type { ProductSeed } from './types.js';
 
 /**
- * Catalogue Dravik : 48 références neuves, huit marques.
+ * Catalogue Dravik : 49 références neuves, huit marques.
  *
  * Fichier GÉNÉRÉ par scripts/build-dravik-catalogue.mjs — ne pas modifier à la
  * main. Les prix se corrigent dans scripts/dravik-prix.csv, la rédaction dans
@@ -2073,6 +2073,49 @@ export const DRAVIK_PRODUCTS: ProductSeed[] = [
     specs: {
       fr: [['Moteur', 'Briggs & Stratton, 500 cm³'], ['Largeur de coupe', '97 cm'], ['Bac', '200 L'], ['Transmission', 'Hydrostatique']],
       de: [['Motor', 'Briggs & Stratton, 500 cm³'], ['Schnittbreite', '97 cm'], ['Fangkorb', '200 L'], ['Getriebe', 'Hydrostatisch']],
+    },
+  },
+  {
+    sku: 'DRV-049',
+    slug: 'stihl-ms-500i-tronconneuse-thermique',
+    categorySlug: 'outils-de-jardin',
+    brand: 'STIHL',
+    model: 'MS 500i',
+    condition: 'NEW',
+    priceCents: 174900,
+    vatMode: 'STANDARD',
+    vatRateBps: 2000,
+    stock: 3,
+    lowStockAlert: 2,
+    isUnique: false,
+    isFeatured: true,
+    weightGrams: 6200,
+    images: [
+      {
+        url: '/produits/dravik/stihl-ms-500i-tronconneuse-thermique.webp',
+        altFr: 'STIHL MS 500i — Tronçonneuse thermique',
+        altDe: 'STIHL MS 500i — Benzin-Kettensäge',
+      },
+    ],
+    fr: {
+      name: 'STIHL MS 500i — tronçonneuse thermique',
+      slug: 'stihl-ms-500i-tronconneuse-thermique',
+      shortDescription: 'Première tronçonneuse à injection électronique : ni starter ni valve de décompression, un coup de lanceur suffit, à froid comme en altitude. 5 kW pour 6,2 kg, soit 1,24 kg/kW.',
+      description: 'Première tronçonneuse à injection électronique : ni starter ni valve de décompression, un coup de lanceur suffit, à froid comme en altitude. 5 kW pour 6,2 kg, soit 1,24 kg/kW.\n\n- **Cylindrée** : 79,2 cm³\n- **Puissance** : 5,0 kW (6,8 ch)\n- **Guide** : 63 cm\n- **Poids à vide** : 6,2 kg\n\n---\n\nNeuf, sous garantie constructeur. Expédié depuis la France vers la France, la Belgique, l’Allemagne et l’Autriche.',
+      metaTitle: 'STIHL MS 500i neuf — Tronçonneuse thermique | Dravik',
+      metaDescription: 'Première tronçonneuse à injection électronique : ni starter ni valve de décompression, un coup de lanceur suffit, à froid comme en altitude. 5 kW pour 6,2 kg,',
+    },
+    de: {
+      name: 'STIHL MS 500i — Benzin-Kettensäge',
+      slug: 'stihl-ms-500i-benzin-kettensage',
+      shortDescription: 'Die erste Kettensäge mit elektronischer Kraftstoffeinspritzung: kein Choke, kein Dekompressionsventil, ein Zug am Starterseil genügt — kalt wie in Höhenlagen. 5 kW bei 6,2 kg, also 1,24 kg/kW.',
+      description: 'Die erste Kettensäge mit elektronischer Kraftstoffeinspritzung: kein Choke, kein Dekompressionsventil, ein Zug am Starterseil genügt — kalt wie in Höhenlagen. 5 kW bei 6,2 kg, also 1,24 kg/kW.\n\n- **Hubraum**: 79,2 cm³\n- **Leistung**: 5,0 kW (6,8 PS)\n- **Schiene**: 63 cm\n- **Leergewicht**: 6,2 kg\n\n---\n\nNeugerät mit Herstellergarantie. Versand aus Frankreich nach Frankreich, Belgien, Deutschland und Österreich.',
+      metaTitle: 'STIHL MS 500i neu — Benzin-Kettensäge | Dravik',
+      metaDescription: 'Die erste Kettensäge mit elektronischer Kraftstoffeinspritzung: kein Choke, kein Dekompressionsventil, ein Zug am Starterseil genügt — kalt wie in Höhenlagen.',
+    },
+    specs: {
+      fr: [['Cylindrée', '79,2 cm³'], ['Puissance', '5,0 kW (6,8 ch)'], ['Guide', '63 cm'], ['Poids à vide', '6,2 kg']],
+      de: [['Hubraum', '79,2 cm³'], ['Leistung', '5,0 kW (6,8 PS)'], ['Schiene', '63 cm'], ['Leergewicht', '6,2 kg']],
     },
   },
 ];

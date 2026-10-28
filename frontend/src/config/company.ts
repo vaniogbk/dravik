@@ -47,10 +47,10 @@ export const COMPANY: Company = {
   capital: '',
 
   address: {
-    line1: '24 Rue',
+    line1: '24 rue de Rivoli',
     line2: '',
-    postalCode: '45843',
-    city: 'Paris sur Seine',
+    postalCode: '75004',
+    city: 'Paris',
     country: 'France',
   },
 

@@ -1,0 +1,22 @@
+[
+  {
+    "id": "DRV-049",
+    "slug": "stihl-ms-500i-tronconneuse-thermique",
+    "brand": "STIHL",
+    "model": "MS 500i",
+    "name": "STIHL MS 500i",
+    "type": "Tronçonneuse thermique",
+    "category": "outils-de-jardin",
+    "category_label": "Outils de jardin",
+    "price_eur": null,
+    "stock": null,
+    "images": {
+      "large": "scripts/dravik-extras-images/stihl-ms-500i-tronconneuse-thermique.webp",
+      "card": "scripts/dravik-extras-images/stihl-ms-500i-tronconneuse-thermique.webp"
+    },
+    "image_from": "repo",
+    "image_source": "Visuel d'attente Dravik — à remplacer par la photo officielle STIHL",
+    "image_status": "placeholder",
+    "check_before_publishing": "Le visuel est une vignette d'attente, pas une photo du produit."
+  }
+]
