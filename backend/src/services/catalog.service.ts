@@ -250,9 +250,15 @@ export async function listCategories(locale: Locale) {
       translations: { where: { locale } },
       children: {
         orderBy: { position: 'asc' },
-        include: { translations: { where: { locale } }, _count: { select: { products: true } } },
+        include: {
+          translations: { where: { locale } },
+          _count: { select: { products: { where: { status: 'PUBLISHED' } } } },
+        },
       },
-      _count: { select: { products: true } },
+      // Compter tous les produits ferait annoncer dans le menu des catégories
+      // dont la page est vide : un produit archivé reste rattaché à sa
+      // catégorie mais ne s'affiche plus en boutique.
+      _count: { select: { products: { where: { status: 'PUBLISHED' } } } },
     },
   });
 

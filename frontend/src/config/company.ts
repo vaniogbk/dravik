@@ -47,10 +47,10 @@ export const COMPANY: Company = {
   capital: '',
 
   address: {
-    line1: '',
+    line1: '24 Rue',
     line2: '',
-    postalCode: '',
-    city: '',
+    postalCode: '45843',
+    city: 'Paris sur Seine',
     country: 'France',
   },
 
@@ -64,10 +64,10 @@ export const COMPANY: Company = {
   /** Personne responsable de la publication du site */
   publicationDirector: '',
 
-  email: '',
+  email: 'dravik@outlook.fr',
   /** Adresse de contact pour les demandes RGPD (peut être identique à `email`) */
-  privacyEmail: '',
-  phone: '',
+  privacyEmail: 'dravik@outlook.fr',
+  phone: '+33 7 56 97 38 64',
   /** Horaires affichés sur la page contact */
   phoneHours: 'du lundi au vendredi, de 9 h à 12 h et de 14 h à 18 h',
 
