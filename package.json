@@ -1,8 +1,8 @@
 {
-  "name": "voltaris",
+  "name": "dravik",
   "version": "1.0.0",
   "private": true,
-  "description": "Voltaris — boutique en ligne de matériel forestier et d'espaces verts (France et Allemagne)",
+  "description": "Dravik — boutique en ligne de matériel forestier et d'espaces verts (France et Allemagne)",
   "engines": {
     "node": ">=20"
   },

@@ -29,7 +29,7 @@ export interface RegisterInput {
   phone?: string;
   company?: string;
   locale?: 'fr' | 'de';
-  country?: 'FR' | 'DE';
+  country?: 'FR' | 'BE' | 'DE' | 'AT';
   marketingOptIn?: boolean;
 }
 

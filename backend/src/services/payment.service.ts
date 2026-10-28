@@ -6,7 +6,7 @@ import { getStripe, stripeEnabled } from '../lib/stripe.js';
 import { ApiError } from '../lib/errors.js';
 import { logger } from '../lib/logger.js';
 import { buildTransferQrSvg } from './sepa-qr.service.js';
-import { getBankAccount } from './settings.service.js';
+import { bankTransferAvailable, resolveReceivingAccount } from './settings.service.js';
 import * as orders from './order.service.js';
 
 /** Instructions de virement SEPA renvoyées au client après commande. */
@@ -31,7 +31,15 @@ export async function bankTransferInstructions(order: Order): Promise<BankTransf
   // Les coordonnées sont relues à chaque affichage : un changement de compte
   // depuis le back-office s'applique aussitôt, y compris aux commandes déjà
   // passées qui n'ont pas encore été réglées.
-  const account = await getBankAccount();
+  // Dravik encaisse sur plusieurs comptes : le pays de livraison décide
+  // lequel. Un acheteur autrichien reçoit l'IBAN allemand, pas le français.
+  const account = await resolveReceivingAccount(order.country);
+  if (!account) {
+    throw ApiError.badRequest(
+      "Aucun compte bancaire n'est configuré pour recevoir ce règlement.",
+      'NO_RECEIVING_ACCOUNT',
+    );
+  }
 
   // Le libellé se limite à la référence : c'est la seule donnée sur laquelle
   // repose le rapprochement, et les libellés courts survivent mieux aux
@@ -87,7 +95,7 @@ export async function createOrRetrievePaymentIntent(orderId: string) {
       currency: order.currency.toLowerCase(),
       automatic_payment_methods: { enabled: true },
       metadata: { orderId: order.id, orderNumber: order.orderNumber },
-      description: `Voltaris — commande ${order.orderNumber}`,
+      description: `Dravik — commande ${order.orderNumber}`,
       receipt_email: order.email,
       shipping: buildStripeShipping(order),
     },
@@ -211,11 +219,22 @@ export async function refundOrder(orderId: string, amountCents?: number) {
   return { manual: false as const, refundId: refund.id };
 }
 
-export function availablePaymentMethods() {
+/**
+ * Moyens de paiement proposés à l'encaissement.
+ *
+ * La carte reste déclarée mais désactivée : l'afficher grisee vaut mieux que
+ * la masquer, car un acheteur qui ne voit aucune carte suppose souvent que la
+ * boutique n'en acceptera jamais. Elle se rallumera d'elle-même le jour où un
+ * prestataire sera branché et où stripeEnabled() répondra vrai.
+ *
+ * Aucun paiement carte n'est simulé : tant qu'aucun prestataire n'est
+ * configuré, la méthode ne peut pas être choisie.
+ */
+export async function availablePaymentMethods() {
   return [
     {
       id: 'BANK_TRANSFER' as const,
-      enabled: true,
+      enabled: await bankTransferAvailable(),
       feeCents: 0,
     },
     {

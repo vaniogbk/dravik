@@ -21,7 +21,7 @@ const addressSchema = z.object({
   line2: z.string().max(160).optional(),
   postalCode: z.string().min(4).max(12),
   city: z.string().min(1).max(80),
-  country: z.enum(['FR', 'DE']),
+  country: z.enum(['FR', 'BE', 'DE', 'AT']),
   phone: z.string().max(30).optional(),
 });
 
@@ -38,7 +38,7 @@ const cartSchema = z
 /** Recalcule le panier côté serveur : totaux, TVA et frais de port. */
 checkoutRouter.post(
   '/quote',
-  validate(z.object({ items: cartSchema, country: z.enum(['FR', 'DE']) })),
+  validate(z.object({ items: cartSchema, country: z.enum(['FR', 'BE', 'DE', 'AT']) })),
   asyncHandler(async (req, res) => {
     const priced = await orderService.priceCart(req.body.items, req.body.country);
     res.json({
@@ -55,13 +55,13 @@ checkoutRouter.post(
 checkoutRouter.get(
   '/payment-methods',
   asyncHandler(async (_req, res) => {
-    res.json({ methods: paymentService.availablePaymentMethods() });
+    res.json({ methods: await paymentService.availablePaymentMethods() });
   }),
 );
 
 checkoutRouter.get(
   '/shipping-rates',
-  validate(z.object({ country: z.enum(['FR', 'DE']).optional() }), 'query'),
+  validate(z.object({ country: z.enum(['FR', 'BE', 'DE', 'AT']).optional() }), 'query'),
   asyncHandler(async (req, res) => {
     const { country } = req.query as { country?: string };
     res.json({ rates: await shippingService.listRates(country) });

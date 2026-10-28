@@ -2,7 +2,7 @@ import type { MetadataRoute } from 'next';
 import { catalog } from '@/lib/api';
 import { LOCALES, path, home, type Locale, type SegmentKey } from '@/lib/routes';
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://voltaris.eu';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://dravik.eu';
 
 /** Pages statiques indexables, avec leur poids relatif. */
 const STATIC_PAGES: Array<{ key: SegmentKey; priority: number; frequency: 'weekly' | 'monthly' }> = [
@@ -10,7 +10,6 @@ const STATIC_PAGES: Array<{ key: SegmentKey; priority: number; frequency: 'weekl
   { key: 'shipping', priority: 0.5, frequency: 'monthly' },
   { key: 'contact', priority: 0.5, frequency: 'monthly' },
   { key: 'terms', priority: 0.3, frequency: 'monthly' },
-  { key: 'legal', priority: 0.3, frequency: 'monthly' },
   { key: 'privacy', priority: 0.3, frequency: 'monthly' },
 ];
 

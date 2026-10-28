@@ -6,7 +6,7 @@ import { vatFromGross } from '../utils/money.js';
 import { bankTransferReference, nextInvoiceNumber, nextOrderNumber } from '../utils/references.js';
 import * as stock from './stock.service.js';
 import * as shipping from './shipping.service.js';
-import { getBankAccount } from './settings.service.js';
+import { getBankSettings } from './settings.service.js';
 
 export interface CartLine {
   productId: string;
@@ -131,7 +131,7 @@ export async function createOrder(input: CreateOrderInput) {
   // Le délai de règlement suit le compte destinataire configuré : il peut être
   // modifié depuis le back-office, sans redéploiement.
   const isTransfer = input.paymentMethod === 'BANK_TRANSFER';
-  const dueDays = isTransfer ? (await getBankAccount()).dueDays : 0;
+  const dueDays = isTransfer ? (await getBankSettings()).dueDays : 0;
 
   const order = await prisma.$transaction(async (tx) => {
     // La réservation se fait dans la transaction : si un autre client passe

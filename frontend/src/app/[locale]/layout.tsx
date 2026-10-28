@@ -16,7 +16,8 @@ const inter = Inter({
 });
 
 export const viewport: Viewport = {
-  themeColor: '#0B0B0C',
+  // Graphite Dravik : teinte la barre d'adresse sur mobile.
+  themeColor: '#0F1115',
   width: 'device-width',
   initialScale: 1,
 };
@@ -25,7 +26,7 @@ export function generateStaticParams() {
   return LOCALES.map((locale) => ({ locale }));
 }
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://voltaris.eu';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://dravik.eu';
 
 export async function generateMetadata({
   params,
@@ -43,6 +44,16 @@ export async function generateMetadata({
     },
     description: t.meta.homeDescription,
     applicationName: t.meta.siteName,
+    manifest: '/site.webmanifest',
+    icons: {
+      icon: [
+        { url: '/favicon.svg', type: 'image/svg+xml' },
+        { url: '/favicon-32.png', sizes: '32x32', type: 'image/png' },
+        { url: '/favicon-16.png', sizes: '16x16', type: 'image/png' },
+      ],
+      shortcut: '/favicon.ico',
+      apple: '/apple-touch-icon.png',
+    },
     alternates: {
       canonical: `/${params.locale}`,
       languages: { fr: '/fr', de: '/de', 'x-default': '/fr' },

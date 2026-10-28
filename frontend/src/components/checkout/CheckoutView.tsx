@@ -20,7 +20,8 @@ import { formatPrice } from '@/lib/format';
 import { path, type Locale } from '@/lib/routes';
 import { cn } from '@/lib/cn';
 
-type Country = 'FR' | 'DE';
+/** Marchés desservis par Dravik, expédiés depuis la France. */
+type Country = 'FR' | 'BE' | 'DE' | 'AT';
 type Method = 'CARD' | 'BANK_TRANSFER';
 
 interface AddressForm {
@@ -588,7 +589,9 @@ function AddressFields({
           className="field"
         >
           <option value="FR">{t.common.france}</option>
+          <option value="BE">{t.common.belgium}</option>
           <option value="DE">{t.common.germany}</option>
+          <option value="AT">{t.common.austria}</option>
         </select>
       </Field>
     </div>

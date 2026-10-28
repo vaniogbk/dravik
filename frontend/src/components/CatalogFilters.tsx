@@ -14,7 +14,6 @@ interface Props {
   facets: Facets;
 }
 
-const CONDITIONS: ProductCondition[] = ['NEW', 'USED', 'REFURBISHED'];
 
 export function CatalogFilters({ locale, categories, facets }: Props) {
   const t = getDictionary(locale);
@@ -120,24 +119,6 @@ export function CatalogFilters({ locale, categories, facets }: Props) {
       </FilterGroup>
 
       {/* -------------------------------------------------------- état */}
-      <FilterGroup title={t.catalog.filter.condition}>
-        {CONDITIONS.map((condition) => {
-          const facet = facets.conditions.find((c) => c.value === condition);
-          if (!facet) return null;
-          return (
-            <label key={condition} className="flex cursor-pointer items-center gap-2.5 py-1 text-sm">
-              <input
-                type="checkbox"
-                checked={selectedConditions.includes(condition)}
-                onChange={() => toggleInList('condition', condition, selectedConditions)}
-                className="h-4 w-4 rounded accent-signal"
-              />
-              <span className="flex-1 text-smoke-600">{t.condition[condition]}</span>
-              <span className="text-xs text-smoke-400">{facet.count}</span>
-            </label>
-          );
-        })}
-      </FilterGroup>
 
       {/* -------------------------------------------------------- prix */}
       <FilterGroup title={t.catalog.filter.price}>

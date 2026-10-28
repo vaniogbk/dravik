@@ -1,5 +1,5 @@
 /**
- * Seed Voltaris.
+ * Seed Dravik.
  *
  * Idempotent : chaque exécution met à jour les enregistrements existants
  * (clé : sku pour les produits, slug pour les catégories) plutôt que de
@@ -13,15 +13,14 @@
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 import { CATEGORIES } from './seed-data/categories.js';
-import { USED_PRODUCTS } from './seed-data/products-used.js';
-import { NEW_PRODUCTS } from './seed-data/products-new.js';
+import { DRAVIK_PRODUCTS } from './seed-data/products-dravik.js';
 import type { ProductSeed } from './seed-data/types.js';
 
 const prisma = new PrismaClient();
 
 const DEFAULT_ADMIN_PASSWORD = 'ChangeMoi!2026';
 
-const ADMIN_EMAIL = process.env.ADMIN_EMAIL ?? 'admin@voltaris.eu';
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL ?? 'admin@dravik.eu';
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD ?? DEFAULT_ADMIN_PASSWORD;
 
 async function seedAdmin() {
@@ -44,7 +43,7 @@ async function seedAdmin() {
       email: ADMIN_EMAIL.toLowerCase(),
       passwordHash,
       firstName: 'Admin',
-      lastName: 'Voltaris',
+      lastName: 'Dravik',
       role: 'ADMIN',
       locale: 'fr',
       country: 'FR',
@@ -57,17 +56,33 @@ async function seedAdmin() {
 
 async function seedShippingRates() {
   const rates = [
-    // ---- France : DPD jusqu'à 30 kg, Schenker au-delà
+    // Dravik expédie depuis la France. Les bandes de poids suivent les
+    // limites réelles des réseaux colis : au-dela, c'est de la messagerie
+    // palette, et le tarif change d'ordre de grandeur.
+
+    // ---- France : marché d'origine
     { country: 'FR', carrier: 'DPD', name: 'Colis standard', minWeightG: 0, maxWeightG: 2_000, priceCents: 790, freeAboveCents: 15_000, etaMinDays: 2, etaMaxDays: 4 },
     { country: 'FR', carrier: 'DPD', name: 'Colis standard', minWeightG: 2_001, maxWeightG: 10_000, priceCents: 1_290, freeAboveCents: 30_000, etaMinDays: 2, etaMaxDays: 4 },
-    { country: 'FR', carrier: 'DPD', name: 'Colis lourd', minWeightG: 10_001, maxWeightG: 30_000, priceCents: 2_490, freeAboveCents: null, etaMinDays: 3, etaMaxDays: 5 },
-    { country: 'FR', carrier: 'Schenker', name: 'Messagerie palette', minWeightG: 30_001, maxWeightG: 120_000, priceCents: 8_900, freeAboveCents: null, etaMinDays: 4, etaMaxDays: 8 },
+    { country: 'FR', carrier: 'DPD', name: 'Colis lourd', minWeightG: 10_001, maxWeightG: 30_000, priceCents: 2_490, freeAboveCents: 60_000, etaMinDays: 3, etaMaxDays: 5 },
+    { country: 'FR', carrier: 'Schenker', name: 'Messagerie palette', minWeightG: 30_001, maxWeightG: 250_000, priceCents: 8_900, freeAboveCents: null, etaMinDays: 4, etaMaxDays: 8 },
 
-    // ---- Allemagne : DHL jusqu'à 31,5 kg (limite du réseau colis), Schenker au-delà
-    { country: 'DE', carrier: 'DHL', name: 'Paket Standard', minWeightG: 0, maxWeightG: 2_000, priceCents: 890, freeAboveCents: 15_000, etaMinDays: 2, etaMaxDays: 4 },
-    { country: 'DE', carrier: 'DHL', name: 'Paket Standard', minWeightG: 2_001, maxWeightG: 10_000, priceCents: 1_490, freeAboveCents: 30_000, etaMinDays: 2, etaMaxDays: 4 },
-    { country: 'DE', carrier: 'DHL', name: 'Paket Schwergut', minWeightG: 10_001, maxWeightG: 31_500, priceCents: 2_790, freeAboveCents: null, etaMinDays: 3, etaMaxDays: 6 },
-    { country: 'DE', carrier: 'Schenker', name: 'Spedition Palette', minWeightG: 31_501, maxWeightG: 120_000, priceCents: 9_900, freeAboveCents: null, etaMinDays: 5, etaMaxDays: 9 },
+    // ---- Belgique : frontalier, même réseau que la France
+    { country: 'BE', carrier: 'DPD', name: 'Colis standard', minWeightG: 0, maxWeightG: 2_000, priceCents: 990, freeAboveCents: 15_000, etaMinDays: 2, etaMaxDays: 4 },
+    { country: 'BE', carrier: 'DPD', name: 'Colis standard', minWeightG: 2_001, maxWeightG: 10_000, priceCents: 1_490, freeAboveCents: 30_000, etaMinDays: 2, etaMaxDays: 4 },
+    { country: 'BE', carrier: 'DPD', name: 'Colis lourd', minWeightG: 10_001, maxWeightG: 30_000, priceCents: 2_790, freeAboveCents: 60_000, etaMinDays: 3, etaMaxDays: 5 },
+    { country: 'BE', carrier: 'Schenker', name: 'Messagerie palette', minWeightG: 30_001, maxWeightG: 250_000, priceCents: 10_900, freeAboveCents: null, etaMinDays: 5, etaMaxDays: 9 },
+
+    // ---- Allemagne : DHL jusqu'à 31,5 kg, limite du reseau colis
+    { country: 'DE', carrier: 'DHL', name: 'Paket Standard', minWeightG: 0, maxWeightG: 2_000, priceCents: 990, freeAboveCents: 15_000, etaMinDays: 3, etaMaxDays: 5 },
+    { country: 'DE', carrier: 'DHL', name: 'Paket Standard', minWeightG: 2_001, maxWeightG: 10_000, priceCents: 1_490, freeAboveCents: 30_000, etaMinDays: 3, etaMaxDays: 5 },
+    { country: 'DE', carrier: 'DHL', name: 'Paket Schwergut', minWeightG: 10_001, maxWeightG: 31_500, priceCents: 2_790, freeAboveCents: 60_000, etaMinDays: 3, etaMaxDays: 6 },
+    { country: 'DE', carrier: 'Schenker', name: 'Spedition Palette', minWeightG: 31_501, maxWeightG: 250_000, priceCents: 11_900, freeAboveCents: null, etaMinDays: 5, etaMaxDays: 9 },
+
+    // ---- Autriche : plus loin, délais et tarifs supérieurs
+    { country: 'AT', carrier: 'DHL', name: 'Paket Standard', minWeightG: 0, maxWeightG: 2_000, priceCents: 1_290, freeAboveCents: 20_000, etaMinDays: 4, etaMaxDays: 6 },
+    { country: 'AT', carrier: 'DHL', name: 'Paket Standard', minWeightG: 2_001, maxWeightG: 10_000, priceCents: 1_890, freeAboveCents: 35_000, etaMinDays: 4, etaMaxDays: 6 },
+    { country: 'AT', carrier: 'DHL', name: 'Paket Schwergut', minWeightG: 10_001, maxWeightG: 31_500, priceCents: 3_290, freeAboveCents: 80_000, etaMinDays: 4, etaMaxDays: 7 },
+    { country: 'AT', carrier: 'Schenker', name: 'Spedition Palette', minWeightG: 31_501, maxWeightG: 250_000, priceCents: 14_900, freeAboveCents: null, etaMinDays: 6, etaMaxDays: 10 },
   ] as const;
 
   for (const rate of rates) {
@@ -209,21 +224,16 @@ async function seedProduct(seed: ProductSeed, categoryIds: Map<string, string>) 
 }
 
 async function main() {
-  console.log('\nSeed Voltaris\n' + '─'.repeat(40));
+  console.log('\nSeed Dravik\n' + '─'.repeat(40));
 
   await seedAdmin();
   await seedShippingRates();
   const categoryIds = await seedCategories();
 
-  for (const seed of USED_PRODUCTS) {
+  for (const seed of DRAVIK_PRODUCTS) {
     await seedProduct(seed, categoryIds);
   }
-  console.log(`  ✔ ${USED_PRODUCTS.length} produits d'occasion (stock réel)`);
-
-  for (const seed of NEW_PRODUCTS) {
-    await seedProduct(seed, categoryIds);
-  }
-  console.log(`  ✔ ${NEW_PRODUCTS.length} produits neufs (catalogue)`);
+  console.log(`  ✔ ${DRAVIK_PRODUCTS.length} références neuves (catalogue Dravik)`);
 
   console.log('─'.repeat(40));
   console.log(`Connexion admin : ${ADMIN_EMAIL}`);

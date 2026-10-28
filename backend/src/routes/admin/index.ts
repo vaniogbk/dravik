@@ -211,7 +211,7 @@ adminRouter.get(
 );
 
 const rateSchema = z.object({
-  country: z.enum(['FR', 'DE']),
+  country: z.enum(['FR', 'BE', 'DE', 'AT']),
   name: z.string().min(1).max(120),
   carrier: z.enum(['DPD', 'DHL', 'Chronopost', 'GLS', 'Schenker']),
   minWeightG: z.number().int().min(0),

@@ -1,4 +1,4 @@
-# Image de production pour l'API Voltaris.
+# Image de production pour l'API Dravik.
 #
 # Railway détecte ce Dockerfile et l'utilise, ce qui rend inopérants le
 # `builder` et le `startCommand` de railway.json : c'est le CMD ci-dessous qui

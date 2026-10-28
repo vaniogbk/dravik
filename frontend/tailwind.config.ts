@@ -1,7 +1,7 @@
 import type { Config } from 'tailwindcss';
 
 /**
- * Charte Voltaris : noir / blanc / rouge.
+ * Charte Dravik : noir / blanc / rouge.
  * Le rouge est réservé aux actions et aux informations commerciales fortes
  * (prix cassés, CTA, badges). Il ne sert jamais de couleur de fond de section :
  * son efficacité vient de sa rareté.
@@ -11,16 +11,23 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        // Graphite Dravik : le noir de la charte n'est pas un noir pur, il
+        // tire légèrement vers le bleu, ce qui adoucit les aplats.
         ink: {
-          DEFAULT: '#0B0B0C',
-          soft: '#151619',
-          muted: '#2A2B2E',
+          DEFAULT: '#0F1115',
+          soft: '#171A20',
+          muted: '#22262E',
         },
         signal: {
-          DEFAULT: '#E1000F', // rouge de marque
-          hover: '#C0000D',
-          soft: '#FFF1F1',
-          ring: 'rgba(225, 0, 15, 0.28)',
+          DEFAULT: '#FF6A00', // orange industriel Dravik
+          hover: '#E05D00',
+          // L'orange de marque ne passe pas le contraste AA en petit texte sur
+          // fond clair. `text` est la variante assombrie prévue pour ça par la
+          // charte : à utiliser dès qu'il s'agit de lire, pas de signaler.
+          text: '#B84A00',
+          bright: '#FF8A3D',
+          soft: '#FFF4EB',
+          ring: 'rgba(255, 106, 0, 0.28)',
         },
         /**
          * Fond général du site. Volontairement en retrait du blanc pur :
@@ -29,17 +36,18 @@ const config: Config = {
          * détachent donc naturellement de ce fond.
          */
         canvas: {
-          DEFAULT: '#F1F1F3',
-          raised: '#F7F7F8',
+          DEFAULT: '#EEF0F2',
+          raised: '#F7F8F9',
         },
+        // Échelle acier de la charte, rangée du plus clair au plus sombre.
         smoke: {
-          50: '#FAFAFA',
-          100: '#F4F4F5',
-          200: '#E7E7E9',
-          300: '#D2D3D6',
-          400: '#A3A5AB',
-          500: '#74777E',
-          600: '#4A4D53',
+          50: '#FAFBFC',
+          100: '#EEF0F2',
+          200: '#DDE0E4',
+          300: '#C4C8CE',
+          400: '#8A8F98',
+          500: '#5F6570',
+          600: '#343A44',
         },
       },
       fontFamily: {

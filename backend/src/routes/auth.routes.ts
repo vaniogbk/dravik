@@ -129,7 +129,7 @@ authRouter.patch(
       phone: z.string().max(30).nullable().optional(),
       company: z.string().max(120).nullable().optional(),
       locale: z.enum(['fr', 'de']).optional(),
-      country: z.enum(['FR', 'DE']).optional(),
+      country: z.enum(['FR', 'BE', 'DE', 'AT']).optional(),
       marketingOptIn: z.boolean().optional(),
     }),
   ),

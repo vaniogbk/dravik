@@ -13,14 +13,12 @@ export default async function HomePage({ params }: { params: { locale: Locale } 
   const locale = params.locale;
   const t = getDictionary(locale);
 
-  let deals: Product[] = [];
   let featured: Product[] = [];
   let categories: Category[] = [];
   let heroImages: HeroImage[] = [];
 
   try {
     const data = await catalog.home(locale);
-    deals = data.deals;
     featured = data.featured;
     categories = data.categories;
     heroImages = data.heroImages;
@@ -30,7 +28,7 @@ export default async function HomePage({ params }: { params: { locale: Locale } 
   }
 
 
-  const dealsHref = `${path(locale, 'catalog')}?condition=USED,REFURBISHED`;
+  const catalogHref = path(locale, 'catalog');
 
   return (
     <>
@@ -38,21 +36,6 @@ export default async function HomePage({ params }: { params: { locale: Locale } 
 
       <TrustBand locale={locale} />
 
-      {deals.length > 0 && (
-        <Section
-          title={t.home.dealsTitle}
-          subtitle={t.home.dealsSubtitle}
-          href={dealsHref}
-          linkLabel={t.home.seeAll}
-          accent
-        >
-          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {deals.map((product, i) => (
-              <ProductCard key={product.id} product={product} locale={locale} priority={i < 3} />
-            ))}
-          </div>
-        </Section>
-      )}
 
       {categories.length > 0 && (
         <Section title={t.home.categoriesTitle}>
@@ -107,7 +90,7 @@ export default async function HomePage({ params }: { params: { locale: Locale } 
  */
 function Hero({ locale, images }: { locale: Locale; images: HeroImage[] }) {
   const t = getDictionary(locale);
-  const dealsHref = `${path(locale, 'catalog')}?condition=USED,REFURBISHED`;
+  const catalogHref = path(locale, 'catalog');
 
   return (
     <section className="relative overflow-hidden border-b border-smoke-200 bg-white lg:min-h-[34rem]">
@@ -128,11 +111,14 @@ function Hero({ locale, images }: { locale: Locale; images: HeroImage[] }) {
           </p>
 
           <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-            <Link href={dealsHref} className="btn btn-primary btn-lg">
+            <Link href={catalogHref} className="btn btn-primary btn-lg">
               {t.home.heroCta}
               <ArrowRight className="h-4 w-4" />
             </Link>
-            <Link href={path(locale, 'catalog')} className="btn btn-outline btn-lg">
+            <Link
+              href={`${catalogHref}?category=outils-electroportatifs`}
+              className="btn btn-outline btn-lg"
+            >
               {t.home.heroCtaSecondary}
             </Link>
           </div>
@@ -186,7 +172,7 @@ function Section({
 
 function OrganizationSchema({ locale }: { locale: Locale }) {
   const t = getDictionary(locale);
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://voltaris.eu';
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://dravik.eu';
 
   const schema = {
     '@context': 'https://schema.org',

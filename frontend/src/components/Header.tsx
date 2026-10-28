@@ -31,7 +31,6 @@ export function Header({ locale, categories }: Props) {
   const hydrated = useCart((s) => s.hydrated);
   const count = hydrated ? lines.reduce((sum, l) => sum + l.quantity, 0) : 0;
 
-  const dealsHref = `${path(locale, 'catalog')}?condition=USED,REFURBISHED`;
 
   // Aucun panneau ne doit survivre à un changement de page.
   useEffect(() => {
@@ -144,12 +143,6 @@ export function Header({ locale, categories }: Props) {
                     ))}
 
                     <li className="mt-1.5 border-t border-smoke-200 pt-1.5">
-                      <Link
-                        href={dealsHref}
-                        className="flex items-center justify-between gap-3 px-4 py-2.5 text-sm font-bold text-signal transition-colors hover:bg-signal-soft"
-                      >
-                        {t.nav.deals}
-                      </Link>
                     </li>
                   </ul>
                 </div>
@@ -280,12 +273,6 @@ export function Header({ locale, categories }: Props) {
                   <span className="text-xs text-smoke-400">{category.productCount}</span>
                 </Link>
               ))}
-              <Link
-                href={dealsHref}
-                className="mt-1 flex items-center justify-between rounded-lg bg-signal px-4 py-3 text-sm font-bold text-white"
-              >
-                {t.nav.deals}
-              </Link>
 
               <hr className="my-3 border-smoke-200" />
               <Link

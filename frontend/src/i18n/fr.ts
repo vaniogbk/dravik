@@ -1,8 +1,8 @@
 export const fr = {
   meta: {
-    siteName: 'Voltaris',
+    siteName: 'Dravik',
     tagline: 'Matériel forestier et espaces verts — neuf et occasion',
-    homeTitle: 'Voltaris — tronçonneuses, débroussailleuses et outils motorisés',
+    homeTitle: 'Dravik — tronçonneuses, débroussailleuses et outils motorisés',
     homeDescription:
       "Spécialiste du matériel forestier et d'espaces verts. Tronçonneuses, débroussailleuses, outils motorisés et accessoires, neufs et occasions contrôlées. Livraison en France et en Allemagne.",
   },
@@ -27,12 +27,12 @@ export const fr = {
   },
 
   home: {
-    heroEyebrow: 'Occasions contrôlées en atelier',
-    heroTitle: 'Du matériel de professionnel,\nà des prix qui ne le sont pas.',
+    heroEyebrow: 'Outillage professionnel, neuf et garanti',
+    heroTitle: 'Les marques des pros,\nau prix du marché européen.',
     heroBody:
-      "Tronçonneuses, débroussailleuses et outils motorisés. Machines neuves sous garantie constructeur et occasions contrôlées pièce par pièce, expédiées en France et en Allemagne.",
-    heroCta: 'Voir les occasions',
-    heroCtaSecondary: 'Parcourir le catalogue',
+      "Bosch Professional, Makita, DeWalt, Festool, Metabo, STIHL, Husqvarna et Tormek. Outillage électroportatif, matériel de jardin et machines d’atelier, expédiés de France vers la Belgique, l’Allemagne et l’Autriche.",
+    heroCta: 'Parcourir le catalogue',
+    heroCtaSecondary: 'Outils électroportatifs',
     dealsTitle: 'Occasions du moment',
     dealsSubtitle: 'Pièces uniques, contrôlées en atelier, garanties. Une fois parties, elles ne reviennent pas.',
     featuredTitle: 'Les plus demandées',
@@ -42,10 +42,10 @@ export const fr = {
     trust: {
       shippingTitle: 'Expédition rapide en 24h',
       shippingBody: 'Expédition sous 24 h ouvrées. Suivi de colis par numéro de commande.',
-      checkedTitle: 'Occasions contrôlées',
-      checkedBody: 'Compression, frein de chaîne, graissage. Garantie 3 à 6 mois.',
+      checkedTitle: 'Garantie constructeur',
+      checkedBody: 'Matériel neuf d’origine, garantie du fabricant, facture à l’appui.',
       paymentTitle: 'Carte ou virement',
-      paymentBody: 'Paiement carte sécurisé Stripe, ou virement SEPA sans frais.',
+      paymentBody: 'Virement SEPA sans frais. Le paiement par carte arrive prochainement.',
       adviceTitle: 'Conseil technique',
       adviceBody: 'Une question sur un modèle ? Écrivez-nous, on répond sous 24 h.',
       bandLabel: 'Nos engagements',
@@ -302,7 +302,7 @@ export const fr = {
     logout: 'Se déconnecter',
     login: {
       title: 'Connexion',
-      subtitle: 'Accès au back-office Voltaris.',
+      subtitle: 'Accès au back-office Dravik.',
       email: 'Adresse e-mail',
       password: 'Mot de passe',
       submit: 'Se connecter',
@@ -375,7 +375,7 @@ export const fr = {
     publishedProducts: 'Produits en ligne',
     lowStock: 'Stock faible',
     recentOrders: 'Dernières commandes',
-    noAccess: 'Cette section est réservée à l’équipe Voltaris.',
+    noAccess: 'Cette section est réservée à l’équipe Dravik.',
     confirmTransfer: 'Encaisser le virement',
     ship: 'Marquer comme expédiée',
     trackingNumber: 'Numéro de suivi',
@@ -457,7 +457,7 @@ export const fr = {
   },
 
   footer: {
-    aboutTitle: 'Voltaris',
+    aboutTitle: 'Dravik',
     aboutBody:
       'Revendeur indépendant de matériel forestier et d’espaces verts, neuf et occasion. Livraison en France métropolitaine et en Allemagne.',
     shopTitle: 'Boutique',
@@ -471,7 +471,7 @@ export const fr = {
     paymentMethods: 'Paiement sécurisé par carte ou virement SEPA',
     rights: 'Tous droits réservés.',
     disclaimer:
-      'Voltaris est un revendeur indépendant. Les marques citées appartiennent à leurs propriétaires respectifs et sont utilisées à des fins de description des produits proposés.',
+      'Dravik est un revendeur indépendant. Les marques citées appartiennent à leurs propriétaires respectifs et sont utilisées à des fins de description des produits proposés.',
   },
 
   common: {
@@ -492,6 +492,8 @@ export const fr = {
     no: 'Non',
     france: 'France',
     germany: 'Allemagne',
+    belgium: 'Belgique',
+    austria: 'Autriche',
     changeLanguage: 'Changer de langue',
   },
 } as const;

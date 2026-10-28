@@ -6,166 +6,104 @@ export interface CategorySeed {
   de: { name: string; slug: string; description: string; metaTitle: string; metaDescription: string };
 }
 
+/**
+ * Quatre familles, alignées sur le catalogue Dravik.
+ *
+ * Les slugs techniques reprennent ceux du fichier d'identité
+ * (DRAVIK/catalogue/products.json) pour que le rapprochement reste direct ;
+ * les slugs d'URL sont localisés pour le référencement de chaque marché.
+ */
 export const CATEGORIES: CategorySeed[] = [
   {
-    slug: 'tronconneuses',
+    slug: 'outils-electroportatifs',
     position: 1,
-    icon: 'chainsaw',
+    icon: 'power-tool',
     fr: {
-      name: 'Tronçonneuses',
-      slug: 'tronconneuses',
+      name: 'Outils électroportatifs',
+      slug: 'outils-electroportatifs',
       description:
-        "Tronçonneuses thermiques et à batterie pour l'abattage, l'ébranchage et le bois de chauffage. Modèles particuliers et professionnels, neufs et occasions garanties.",
-      metaTitle: 'Tronçonneuses thermiques et à batterie — neuves et occasions',
+        'Perceuses, meuleuses, scies et perforateurs des grandes marques professionnelles. Machines nues ou complètes, toutes neuves et sous garantie constructeur.',
+      metaTitle: 'Outils électroportatifs professionnels — Bosch, Makita, DeWalt, Metabo, Festool',
       metaDescription:
-        'Tronçonneuses professionnelles et grand public : abattage, élagage, bois de chauffage. Machines neuves et occasions révisées, livrées en France et en Allemagne.',
+        'Perceuses-visseuses, meuleuses, scies circulaires et perforateurs neufs. Marques professionnelles, garantie constructeur, livraison France, Belgique, Allemagne et Autriche.',
     },
     de: {
-      name: 'Kettensägen',
-      slug: 'kettensaegen',
+      name: 'Elektrowerkzeuge',
+      slug: 'elektrowerkzeuge',
       description:
-        'Benzin- und Akku-Kettensägen für Fällung, Entastung und Brennholz. Modelle für Privat- und Profianwender, neu und geprüft gebraucht.',
-      metaTitle: 'Kettensägen — Benzin und Akku, neu und gebraucht',
+        'Bohrschrauber, Winkelschleifer, Sägen und Bohrhämmer namhafter Profimarken. Als Solo-Gerät oder komplett, alle neu und mit Herstellergarantie.',
+      metaTitle: 'Profi-Elektrowerkzeuge — Bosch, Makita, DeWalt, Metabo, Festool',
       metaDescription:
-        'Profi- und Hobby-Kettensägen für Fällung, Entastung und Brennholz. Neugeräte und geprüfte Gebrauchtmaschinen, Lieferung nach Deutschland und Frankreich.',
+        'Akku-Bohrschrauber, Winkelschleifer, Handkreissägen und Bohrhämmer, neu. Profimarken, Herstellergarantie, Lieferung nach DE, AT, FR und BE.',
     },
   },
   {
-    slug: 'scies',
+    slug: 'outils-de-jardin',
     position: 2,
-    icon: 'saw',
+    icon: 'garden',
     fr: {
-      name: 'Scies et découpeuses',
-      slug: 'scies-decoupeuses',
+      name: 'Outils de jardin',
+      slug: 'outils-de-jardin',
       description:
-        "Scies à batterie pour la coupe fine et découpeuses à disque pour le chantier. Complément direct de la tronçonneuse là où elle est trop encombrante ou trop puissante.",
-      metaTitle: 'Scies à batterie et découpeuses à disque',
+        'Tronçonneuses, débroussailleuses, taille-haies, souffleurs et tondeuses. Thermique pour la puissance continue, batterie pour le silence et le démarrage immédiat.',
+      metaTitle: 'Outils de jardin thermiques et à batterie — STIHL, Husqvarna, Makita',
       metaDescription:
-        'Scies à batterie pour l’élagage et la coupe fine, découpeuses à disque pour le béton et le métal. Neuves et occasions révisées, livrées en France et en Allemagne.',
+        'Tronçonneuses, débroussailleuses, taille-haies et tondeuses neufs. STIHL et Husqvarna, garantie constructeur, livraison en France, Belgique, Allemagne et Autriche.',
     },
     de: {
-      name: 'Sägen und Trennschleifer',
-      slug: 'saegen-trennschleifer',
+      name: 'Gartengeräte',
+      slug: 'gartengeraete',
       description:
-        'Akku-Sägen für feine Schnitte und Trennschleifer für die Baustelle. Die direkte Ergänzung zur Kettensäge, wo diese zu sperrig oder zu stark ist.',
-      metaTitle: 'Akku-Sägen und Trennschleifer',
+        'Kettensägen, Freischneider, Heckenscheren, Blasgeräte und Rasenmäher. Benzin für Dauerleistung, Akku für leises Arbeiten und sofortigen Start.',
+      metaTitle: 'Gartengeräte mit Benzin- und Akkuantrieb — STIHL, Husqvarna, Makita',
       metaDescription:
-        'Akku-Sägen für Entastung und feine Schnitte, Trennschleifer für Beton und Metall. Neu und geprüft gebraucht, Lieferung nach Deutschland und Frankreich.',
+        'Kettensägen, Freischneider, Heckenscheren und Rasenmäher, neu. STIHL und Husqvarna, Herstellergarantie, Lieferung nach DE, AT, FR und BE.',
     },
   },
   {
-    slug: 'debroussailleuses',
+    slug: 'machines',
     position: 3,
-    icon: 'brushcutter',
+    icon: 'machine',
     fr: {
-      name: 'Débroussailleuses',
-      slug: 'debroussailleuses',
+      name: "Machines d'atelier",
+      slug: 'machines-atelier',
       description:
-        "Débroussailleuses thermiques et à batterie pour l'entretien des terrains, talus et sous-bois. Harnais, têtes fil et couteaux disponibles.",
-      metaTitle: 'Débroussailleuses thermiques et à batterie',
+        "Aspirateurs de chantier et systèmes d'affûtage. Les machines qui restent à l'atelier et servent à toutes les autres.",
+      metaTitle: "Machines d'atelier — aspirateurs de chantier et affûtage",
       metaDescription:
-        'Débroussailleuses professionnelles pour terrains difficiles, talus et sous-bois. Livraison en France et en Allemagne, paiement carte ou virement.',
+        "Aspirateurs de chantier Festool, Bosch, DeWalt, Metabo et systèmes d'affûtage Tormek. Neufs, garantie constructeur, livraison en Europe de l'Ouest.",
     },
     de: {
-      name: 'Freischneider',
-      slug: 'freischneider',
+      name: 'Werkstattmaschinen',
+      slug: 'werkstattmaschinen',
       description:
-        'Benzin- und Akku-Freischneider für Grünflächen, Böschungen und Unterholz. Tragegurte, Mähköpfe und Dickichtmesser verfügbar.',
-      metaTitle: 'Freischneider — Benzin und Akku',
+        'Baustellensauger und Schleifsysteme. Die Maschinen, die in der Werkstatt bleiben und allen anderen dienen.',
+      metaTitle: 'Werkstattmaschinen — Baustellensauger und Schleifsysteme',
       metaDescription:
-        'Profi-Freischneider für schwieriges Gelände, Böschungen und Unterholz. Lieferung nach Deutschland und Frankreich, Zahlung per Karte oder Überweisung.',
-    },
-  },
-  {
-    slug: 'broyeurs',
-    position: 4,
-    icon: 'shredder',
-    fr: {
-      name: 'Broyeurs de végétaux',
-      slug: 'broyeurs-vegetaux',
-      description:
-        "Broyeurs électriques et thermiques pour réduire branches et tailles en paillage. Système à rouleau pour le bois vert, multi-couteaux pour les déchets mélangés.",
-      metaTitle: 'Broyeurs de végétaux électriques et thermiques',
-      metaDescription:
-        'Broyeurs de branches électriques et thermiques : rouleau silencieux pour le bois vert, multi-couteaux pour les tailles mélangées. Livraison France et Allemagne.',
-    },
-    de: {
-      name: 'Häcksler',
-      slug: 'haecksler',
-      description:
-        'Elektro- und Benzin-Häcksler, die Äste und Schnittgut zu Mulch verkleinern. Walzensystem für frisches Holz, Messersystem für gemischtes Material.',
-      metaTitle: 'Gartenhäcksler — Elektro und Benzin',
-      metaDescription:
-        'Gartenhäcksler mit Elektro- oder Benzinmotor: leise Walze für frisches Holz, Messerwalze für gemischtes Schnittgut. Lieferung nach Deutschland und Frankreich.',
-    },
-  },
-  {
-    slug: 'outils-motorises',
-    position: 5,
-    icon: 'tools',
-    fr: {
-      name: 'Outils motorisés',
-      slug: 'outils-motorises',
-      description:
-        'Taille-haies, souffleurs, élagueuses sur perche et découpeuses à disque pour les professionnels du paysage et du bâtiment.',
-      metaTitle: 'Taille-haies, souffleurs, élagueuses et découpeuses',
-      metaDescription:
-        'Outils motorisés professionnels : taille-haies, souffleurs, perches élagueuses, découpeuses à disque. Stock disponible, expédition sous 24 h.',
-    },
-    de: {
-      name: 'Motorgeräte',
-      slug: 'motorgeraete',
-      description:
-        'Heckenscheren, Blasgeräte, Hoch-Entaster und Trennschleifer für Garten-, Landschaftsbau und Baustelle.',
-      metaTitle: 'Heckenscheren, Blasgeräte, Hoch-Entaster und Trennschleifer',
-      metaDescription:
-        'Professionelle Motorgeräte: Heckenscheren, Blasgeräte, Hoch-Entaster, Trennschleifer. Ab Lager verfügbar, Versand innerhalb von 24 Stunden.',
-    },
-  },
-  {
-    slug: 'affutage',
-    position: 6,
-    icon: 'sharpening',
-    fr: {
-      name: 'Affûtage et entretien',
-      slug: 'affutage-entretien',
-      description:
-        "Systèmes d'affûtage à eau, limes, gabarits et consommables d'entretien pour garder une coupe nette et sûre.",
-      metaTitle: "Affûtage et entretien — systèmes à eau, limes et gabarits",
-      metaDescription:
-        "Systèmes d'affûtage à eau, limes rondes, gabarits et huiles d'entretien. Matériel neuf et occasions pour ateliers et particuliers exigeants.",
-    },
-    de: {
-      name: 'Schärfen und Wartung',
-      slug: 'schaerfen-wartung',
-      description:
-        'Nassschleifsysteme, Feilen, Vorrichtungen und Wartungsmittel für dauerhaft saubere und sichere Schnitte.',
-      metaTitle: 'Schärfen und Wartung — Nassschleifsysteme, Feilen, Vorrichtungen',
-      metaDescription:
-        'Nassschleifsysteme, Rundfeilen, Schleifvorrichtungen und Wartungsöle. Neu und gebraucht, für Werkstatt und anspruchsvolle Privatanwender.',
+        'Baustellensauger von Festool, Bosch, DeWalt und Metabo sowie Tormek-Schleifsysteme. Neu, Herstellergarantie, Lieferung in Westeuropa.',
     },
   },
   {
     slug: 'accessoires',
-    position: 7,
+    position: 4,
     icon: 'accessories',
     fr: {
-      name: 'Accessoires et protection',
-      slug: 'accessoires-protection',
+      name: 'Accessoires et batteries',
+      slug: 'accessoires-batteries',
       description:
-        'Guides-chaînes, chaînes, huiles, batteries, chargeurs et équipements de protection individuelle homologués.',
-      metaTitle: 'Guides, chaînes, huiles, batteries et équipements de protection',
+        "Batteries, chargeurs, rails de guidage, meules et gabarits d'affûtage. Les consommables et compléments qui font durer les machines.",
+      metaTitle: 'Batteries, chargeurs et accessoires professionnels',
       metaDescription:
-        'Guides-chaînes, chaînes de rechange, huiles moteur et de chaîne, batteries, chargeurs, casques et pantalons anti-coupures homologués EN 381.',
+        "Batteries 18 V, chargeurs, rails de guidage Festool, meules et gabarits Tormek. Pièces d'origine, livraison en France, Belgique, Allemagne et Autriche.",
     },
     de: {
-      name: 'Zubehör und Schutzausrüstung',
-      slug: 'zubehoer-schutzausruestung',
+      name: 'Zubehör und Akkus',
+      slug: 'zubehoer-akkus',
       description:
-        'Führungsschienen, Sägeketten, Öle, Akkus, Ladegeräte und geprüfte persönliche Schutzausrüstung.',
-      metaTitle: 'Schienen, Ketten, Öle, Akkus und Schutzausrüstung',
+        'Akkus, Ladegeräte, Führungsschienen, Schleifsteine und Schärfvorrichtungen. Das Verbrauchsmaterial, das Maschinen am Leben hält.',
+      metaTitle: 'Akkus, Ladegeräte und Profizubehör',
       metaDescription:
-        'Führungsschienen, Ersatzketten, Motor- und Haftöle, Akkus, Ladegeräte, Helme und Schnittschutzhosen nach EN 381.',
+        '18-V-Akkus, Ladegeräte, Festool-Führungsschienen, Tormek-Steine und -Vorrichtungen. Originalteile, Lieferung nach DE, AT, FR und BE.',
     },
   },
 ];

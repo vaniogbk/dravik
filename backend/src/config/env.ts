@@ -21,15 +21,22 @@ const schema = z.object({
   STRIPE_SECRET_KEY: z.string().optional(),
   STRIPE_WEBHOOK_SECRET: z.string().optional(),
 
-  // Virement SEPA
-  BANK_ACCOUNT_HOLDER: z.string().default('Voltaris SAS'),
-  BANK_IBAN: z.string().default('FR7630001007941234567890185'),
-  BANK_BIC: z.string().default('BDFEFRPPCCT'),
-  BANK_NAME: z.string().default('Banque de démonstration'),
+  // Virement SEPA — aucune valeur par défaut.
+  //
+  // Ces champs portaient un IBAN de démonstration (le FR76 3000 1007 94… de
+  // la Banque de France). Un défaut est commode en local, mais en production
+  // il affiche de vraies coordonnées fausses à de vrais clients : l'argent
+  // part vers un compte de test et personne ne s'en aperçoit avant la
+  // réclamation. Vides, le virement est simplement annoncé indisponible
+  // jusqu'à ce que les comptes soient saisis depuis le back-office.
+  BANK_ACCOUNT_HOLDER: z.string().default(''),
+  BANK_IBAN: z.string().default(''),
+  BANK_BIC: z.string().default(''),
+  BANK_NAME: z.string().default(''),
   BANK_TRANSFER_DUE_DAYS: z.coerce.number().default(7),
 
   // Compte administrateur créé par le seed
-  ADMIN_EMAIL: z.string().email().default('admin@voltaris.eu'),
+  ADMIN_EMAIL: z.string().email().default('admin@dravik.eu'),
   ADMIN_PASSWORD: z.string().min(8).default('ChangeMoi!2026'),
 
   // Formulaire de contact → Telegram (optionnel).

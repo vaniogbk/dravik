@@ -203,9 +203,12 @@ if (existsSync(companyFile)) {
   );
 
   if (empty.length) {
-    block(
+    // La page de mentions légales a été retirée sur décision du client : ce
+    // contrôle ne bloque donc plus la mise en production. Il reste signalé,
+    // parce que ces données restent exigées par Google Merchant Center.
+    warn(
       `${empty.length} donnée(s) de société non renseignée(s) : ${empty.slice(0, 6).join(', ')}${empty.length > 6 ? '…' : ''}`,
-      "Complétez frontend/src/config/company.ts. Les mentions légales sont obligatoires en France (art. 6 III LCEN) et en Allemagne (§ 5 DDG), et Google Merchant Center les exige pour valider la boutique.",
+      "Sans objet tant que la boutique n'affiche pas de mentions légales. À compléter dans frontend/src/config/company.ts si vous visez Google Merchant Center.",
     );
   }
 }

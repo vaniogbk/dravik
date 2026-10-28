@@ -249,11 +249,7 @@ function DirectContact({ locale }: { locale: Locale }) {
         </dl>
       ) : (
         <p className="mt-4 text-sm leading-relaxed text-smoke-600">
-          {t.contact.directFallback}{' '}
-          <Link href={path(locale, 'legal')} className="font-semibold text-signal hover:underline">
-            {t.footer.legal}
-          </Link>
-          .
+          {t.contact.directFallback}
         </p>
       )}
     </div>

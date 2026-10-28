@@ -36,14 +36,6 @@ export function Footer({ locale, categories }: { locale: Locale; categories: Cat
             {t.footer.shopTitle}
           </h2>
           <ul className="mt-4 space-y-2.5 text-sm">
-            <li>
-              <Link
-                href={`${path(locale, 'catalog')}?condition=USED,REFURBISHED`}
-                className="font-semibold text-signal hover:underline"
-              >
-                {t.nav.deals}
-              </Link>
-            </li>
             {categories.map((category) => (
               <li key={category.id}>
                 <Link
@@ -110,9 +102,6 @@ export function Footer({ locale, categories }: { locale: Locale; categories: Cat
             <nav aria-label={t.footer.legalTitle} className="flex flex-wrap gap-x-5 gap-y-1.5">
             <Link href={path(locale, 'terms')} className="hover:text-ink">
               {t.footer.terms}
-            </Link>
-            <Link href={path(locale, 'legal')} className="hover:text-ink">
-              {t.footer.legal}
             </Link>
               <Link href={path(locale, 'privacy')} className="hover:text-ink">
                 {t.footer.privacy}

@@ -68,7 +68,7 @@ const addressSchema = z.object({
   line2: z.string().max(160).optional(),
   postalCode: z.string().min(4).max(12),
   city: z.string().min(1).max(80),
-  country: z.enum(['FR', 'DE']),
+  country: z.enum(['FR', 'BE', 'DE', 'AT']),
   phone: z.string().max(30).optional(),
 });
 

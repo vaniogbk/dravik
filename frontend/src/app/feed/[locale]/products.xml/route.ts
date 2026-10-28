@@ -42,7 +42,7 @@ interface FeedItem {
   category: string;
 }
 
-const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? 'https://voltaris.eu').replace(/\/$/, '');
+const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? 'https://dravik.eu').replace(/\/$/, '');
 
 /** Correspondance état interne → valeur acceptée par Google. */
 const GOOGLE_CONDITION: Record<FeedItem['condition'], string> = {

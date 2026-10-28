@@ -30,7 +30,6 @@ export const SEGMENTS = {
   admin: { fr: 'admin', de: 'admin' },
   shipping: { fr: 'livraison', de: 'versand' },
   terms: { fr: 'cgv', de: 'agb' },
-  legal: { fr: 'mentions-legales', de: 'impressum' },
   privacy: { fr: 'confidentialite', de: 'datenschutz' },
   contact: { fr: 'contact', de: 'kontakt' },
 } as const;

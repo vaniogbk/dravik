@@ -438,7 +438,7 @@ function svg(name, brand, artKey, spec, opts) {
   <text x="80" y="636" font-family="Inter, Roboto, Helvetica, Arial, sans-serif" font-size="${fontSize}" font-weight="800" letter-spacing="-1" fill="${INK}">${escape(name)}</text>
   <text x="80" y="682" font-family="Inter, Roboto, Helvetica, Arial, sans-serif" font-size="23" font-weight="600" fill="${GREY}">${escape(spec)}</text>
 
-  <text x="820" y="682" text-anchor="end" font-family="Inter, Roboto, Helvetica, Arial, sans-serif" font-size="17" font-weight="700" letter-spacing="3" fill="${FAINT}">VOLTARIS</text>
+  <text x="820" y="682" text-anchor="end" font-family="Inter, Roboto, Helvetica, Arial, sans-serif" font-size="17" font-weight="700" letter-spacing="3" fill="${FAINT}">DRAVIK</text>
 </svg>
 `;
 }

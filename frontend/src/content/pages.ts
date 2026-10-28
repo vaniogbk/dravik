@@ -8,7 +8,7 @@ export interface StaticPage {
   needsCompanyData?: boolean;
 }
 
-type PageKey = 'shipping' | 'terms' | 'legal' | 'privacy' | 'contact';
+type PageKey = 'shipping' | 'terms' | 'privacy' | 'contact';
 
 /**
  * Contenu des pages d'information.
@@ -59,7 +59,7 @@ Vérifiez l'état de l'emballage devant le livreur. En cas de dommage visible, �
       title: 'Conditions générales de vente',
       needsCompanyData: true,
       intro:
-        'Les présentes conditions régissent les ventes conclues sur voltaris.eu entre [[RAISON_SOCIALE]] et ses clients.',
+        'Les présentes conditions régissent les ventes conclues sur dravik.eu entre [[RAISON_SOCIALE]] et ses clients.',
       body: `### 1. Objet et acceptation
 
 Toute commande passée sur le site implique l'acceptation sans réserve des présentes conditions générales de vente. Elles prévalent sur tout autre document.
@@ -124,38 +124,6 @@ Le traitement des données est décrit dans notre politique de confidentialité.
 Les présentes conditions sont soumises au droit français. En cas de litige, une solution amiable sera recherchée en priorité. Le consommateur peut recourir gratuitement à la plateforme européenne de règlement en ligne des litiges : **ec.europa.eu/consumers/odr**.
 
 À défaut d'accord, les tribunaux compétents sont ceux du ressort de [[VILLE_TRIBUNAL]].`,
-    },
-
-    legal: {
-      title: 'Mentions légales',
-      needsCompanyData: true,
-      intro: 'Informations relatives à l’éditeur et à l’hébergement du site voltaris.eu.',
-      body: `### Éditeur du site
-
-**[[RAISON_SOCIALE]]**
-[[FORME_JURIDIQUE]] au capital de [[CAPITAL]] €
-[[ADRESSE_COMPLETE]]
-
-- SIREN : [[SIREN]]
-- RCS : [[RCS]]
-- TVA intracommunautaire : [[TVA_INTRA]]
-- Directeur de la publication : [[DIRECTEUR_PUBLICATION]]
-- Contact : [[EMAIL_CONTACT]] — [[TELEPHONE]]
-
-### Hébergement
-
-- **Site web** : Vercel Inc., 340 S Lemon Ave #4133, Walnut, CA 91789, États-Unis
-- **Application et base de données** : Railway Corp., 80 Bogart St, Brooklyn, NY 11206, États-Unis
-
-### Propriété intellectuelle
-
-Les textes, la charte graphique et les photographies produites par Voltaris sont sa propriété exclusive. Toute reproduction sans autorisation écrite est interdite.
-
-### Marques citées
-
-**Voltaris est un revendeur indépendant.** Il n'est ni détenu, ni mandaté, ni agréé par les fabricants dont les produits sont proposés à la vente.
-
-Les marques citées sur ce site — notamment STIHL, marque déposée d'ANDREAS STIHL AG & Co. KG (Waiblingen, Allemagne), et TORMEK, marque déposée de Tormek AB (Lindesberg, Suède) — appartiennent à leurs titulaires respectifs. Elles sont utilisées exclusivement pour désigner et décrire les produits proposés, conformément au droit applicable en matière d'épuisement des droits de marque au sein de l'Espace économique européen.`,
     },
 
     privacy: {
@@ -255,7 +223,7 @@ Prüfen Sie den Zustand der Verpackung in Anwesenheit des Zustellers. Bei sichtb
       title: 'Allgemeine Geschäftsbedingungen',
       needsCompanyData: true,
       intro:
-        'Diese Bedingungen regeln die über voltaris.eu geschlossenen Kaufverträge zwischen [[RAISON_SOCIALE]] und ihren Kunden.',
+        'Diese Bedingungen regeln die über dravik.eu geschlossenen Kaufverträge zwischen [[RAISON_SOCIALE]] und ihren Kunden.',
       body: `### 1. Geltungsbereich
 
 Mit jeder Bestellung über diese Website akzeptieren Sie diese Allgemeinen Geschäftsbedingungen vorbehaltlos. Sie gehen abweichenden Bedingungen vor.
@@ -320,38 +288,6 @@ Die Datenverarbeitung ist in unserer Datenschutzerklärung beschrieben.
 Es gilt französisches Recht; zwingende Verbraucherschutzvorschriften des Wohnsitzstaats bleiben unberührt. Verbraucher können die europäische Plattform zur Online-Streitbeilegung kostenfrei nutzen: **ec.europa.eu/consumers/odr**.
 
 Wir sind weder verpflichtet noch bereit, an einem Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen.`,
-    },
-
-    legal: {
-      title: 'Impressum',
-      needsCompanyData: true,
-      intro: 'Angaben zum Betreiber und zum Hosting von voltaris.eu.',
-      body: `### Angaben gemäß § 5 DDG
-
-**[[RAISON_SOCIALE]]**
-[[FORME_JURIDIQUE]] mit einem Kapital von [[CAPITAL]] €
-[[ADRESSE_COMPLETE]]
-
-- Handelsregister: [[RCS]]
-- Registernummer: [[SIREN]]
-- Umsatzsteuer-Identifikationsnummer: [[TVA_INTRA]]
-- Verantwortlich für den Inhalt: [[DIRECTEUR_PUBLICATION]]
-- Kontakt: [[EMAIL_CONTACT]] — [[TELEPHONE]]
-
-### Hosting
-
-- **Website**: Vercel Inc., 340 S Lemon Ave #4133, Walnut, CA 91789, USA
-- **Anwendung und Datenbank**: Railway Corp., 80 Bogart St, Brooklyn, NY 11206, USA
-
-### Urheberrecht
-
-Texte, Gestaltung und von Voltaris erstellte Fotografien sind urheberrechtlich geschützt. Jede Vervielfältigung ohne schriftliche Zustimmung ist untersagt.
-
-### Genannte Marken
-
-**Voltaris ist ein unabhängiger Händler.** Wir gehören keinem der Hersteller an, deren Produkte wir anbieten, und sind von diesen weder beauftragt noch autorisiert.
-
-Die auf dieser Website genannten Marken — insbesondere STIHL, eingetragene Marke der ANDREAS STIHL AG & Co. KG (Waiblingen, Deutschland), und TORMEK, eingetragene Marke der Tormek AB (Lindesberg, Schweden) — sind Eigentum ihrer jeweiligen Inhaber. Sie werden ausschließlich zur Bezeichnung und Beschreibung der angebotenen Waren verwendet, im Rahmen der Erschöpfung des Markenrechts im Europäischen Wirtschaftsraum.`,
     },
 
     privacy: {

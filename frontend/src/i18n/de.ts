@@ -2,9 +2,9 @@ import type { Dictionary } from './fr';
 
 export const de: Dictionary = {
   meta: {
-    siteName: 'Voltaris',
+    siteName: 'Dravik',
     tagline: 'Forst- und Gartentechnik — neu und gebraucht',
-    homeTitle: 'Voltaris — Kettensägen, Freischneider und Motorgeräte',
+    homeTitle: 'Dravik — Kettensägen, Freischneider und Motorgeräte',
     homeDescription:
       'Spezialist für Forst- und Gartentechnik. Kettensägen, Freischneider, Motorgeräte und Zubehör, neu und geprüft gebraucht. Lieferung nach Deutschland und Frankreich.',
   },
@@ -33,8 +33,8 @@ export const de: Dictionary = {
     heroTitle: 'Profi-Technik,\nzu Preisen, die es nicht sind.',
     heroBody:
       'Kettensägen, Freischneider und Motorgeräte. Neugeräte mit Herstellergarantie und Gebrauchtmaschinen, Bauteil für Bauteil geprüft — Versand nach Deutschland und Frankreich.',
-    heroCta: 'Gebrauchtmaschinen ansehen',
-    heroCtaSecondary: 'Katalog durchsuchen',
+    heroCta: 'Katalog durchsuchen',
+    heroCtaSecondary: 'Elektrowerkzeuge',
     dealsTitle: 'Aktuelle Gebrauchtmaschinen',
     dealsSubtitle:
       'Einzelstücke, in der Werkstatt geprüft, mit Garantie. Was weg ist, kommt nicht wieder.',
@@ -458,7 +458,7 @@ export const de: Dictionary = {
   },
 
   footer: {
-    aboutTitle: 'Voltaris',
+    aboutTitle: 'Dravik',
     aboutBody:
       'Unabhängiger Händler für Forst- und Gartentechnik, neu und gebraucht. Lieferung nach Deutschland und Frankreich.',
     shopTitle: 'Shop',
@@ -472,7 +472,7 @@ export const de: Dictionary = {
     paymentMethods: 'Sichere Zahlung per Karte oder SEPA-Überweisung',
     rights: 'Alle Rechte vorbehalten.',
     disclaimer:
-      'Voltaris ist ein unabhängiger Händler. Genannte Marken gehören ihren jeweiligen Inhabern und werden ausschließlich zur Beschreibung der angebotenen Produkte verwendet.',
+      'Dravik ist ein unabhängiger Händler. Genannte Marken gehören ihren jeweiligen Inhabern und werden ausschließlich zur Beschreibung der angebotenen Produkte verwendet.',
   },
 
   common: {
@@ -493,6 +493,8 @@ export const de: Dictionary = {
     no: 'Nein',
     france: 'Frankreich',
     germany: 'Deutschland',
+    belgium: 'Belgien',
+    austria: 'Österreich',
     changeLanguage: 'Sprache wechseln',
   },
 };
