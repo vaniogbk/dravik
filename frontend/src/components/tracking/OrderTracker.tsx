@@ -37,7 +37,8 @@ interface TrackedOrder {
     shippedAt: string | null;
     deliveredAt: string | null;
   }>;
-  proofs: ExistingProof[];
+  /** Absent tant que l'API deployee ne sait pas recevoir de justificatif. */
+  proofs?: ExistingProof[];
   payment:
     | { method: 'BANK_TRANSFER'; instructions: BankTransferInstructions }
     | { method: 'CARD' };
@@ -242,13 +243,15 @@ function TrackedOrderView({
             </dl>
           </div>
 
-          <TransferProofUpload
-            locale={locale}
-            orderNumber={order.orderNumber}
-            email={order.email}
-            proofs={proofs}
-            onSubmitted={onReload}
-          />
+          {proofs && (
+            <TransferProofUpload
+              locale={locale}
+              orderNumber={order.orderNumber}
+              email={order.email}
+              proofs={proofs}
+              onSubmitted={onReload}
+            />
+          )}
         </section>
       )}
 

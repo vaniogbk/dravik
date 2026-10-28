@@ -35,7 +35,8 @@ interface Props {
     imageUrl: string | null;
   }>;
   payment: { method: 'BANK_TRANSFER'; instructions: BankTransferInstructions } | { method: 'CARD' };
-  proofs: ExistingProof[];
+  /** Absent tant que l'API déployée ne sait pas recevoir de justificatif. */
+  proofs?: ExistingProof[];
 }
 
 export function ConfirmationView({ locale, order, items, payment, proofs }: Props) {
@@ -244,7 +245,7 @@ function TransferPanel({
   locale: Locale;
   instructions: BankTransferInstructions;
   order: OrderSummary;
-  proofs: ExistingProof[];
+  proofs?: ExistingProof[];
 }) {
   const t = getDictionary(locale);
 
@@ -339,14 +340,16 @@ function TransferPanel({
 
       {/* Le dépôt est sous les coordonnées, pas ailleurs : le client vient de
           faire son virement, c'est là qu'il a le justificatif sous la main. */}
-      <div className="print:hidden">
-        <TransferProofUpload
-          locale={locale}
-          orderNumber={order.orderNumber}
-          email={order.email}
-          proofs={proofs}
-        />
-      </div>
+      {proofs && (
+        <div className="print:hidden">
+          <TransferProofUpload
+            locale={locale}
+            orderNumber={order.orderNumber}
+            email={order.email}
+            proofs={proofs}
+          />
+        </div>
+      )}
     </section>
   );
 }
