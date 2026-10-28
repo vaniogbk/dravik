@@ -58,6 +58,13 @@ function readProducts() {
   return [...base, ...extras];
 }
 
+/**
+ * Les vignettes d'attente vivent dans un sous-dossier à part : le flux Google
+ * Merchant s'en sert pour les écarter. Un visuel de remplacement soumis à
+ * Google fait rejeter l'article, voire suspendre le compte.
+ */
+const imageDir = (product) => (product.image_placeholder ? 'attente/' : '');
+
 /** Dossier d'où partir pour retrouver le visuel d'une référence. */
 const imageRoot = (product) => (product.image_from === 'repo' ? ROOT : resolve(SOURCE, 'catalogue'));
 
@@ -190,7 +197,7 @@ function emit(product, price, copy) {
     weightGrams: ${price.weightGrams},
     images: [
       {
-        url: '/produits/dravik/${slug}.webp',
+        url: '/produits/dravik/${imageDir(product)}${slug}.webp',
         altFr: ${q(`${brand} ${model} — ${type}`)},
         altDe: ${q(`${brand} ${model} — ${typeDe}`)},
       },
@@ -230,12 +237,13 @@ if (missing.length) {
 }
 
 mkdirSync(OUT_IMG, { recursive: true });
+mkdirSync(resolve(OUT_IMG, 'attente'), { recursive: true });
 let copied = 0;
 let absent = 0;
 for (const p of products) {
   const from = resolve(imageRoot(p), p.images.large);
   if (existsSync(from)) {
-    copyFileSync(from, resolve(OUT_IMG, `${p.slug}.webp`));
+    copyFileSync(from, resolve(OUT_IMG, `${imageDir(p)}${p.slug}.webp`));
     copied++;
   } else {
     absent++;

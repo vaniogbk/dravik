@@ -29,10 +29,10 @@ export const de: Dictionary = {
   },
 
   home: {
-    heroEyebrow: 'Werkstattgeprüfte Gebrauchtmaschinen',
-    heroTitle: 'Profi-Technik,\nzu Preisen, die es nicht sind.',
+    heroEyebrow: 'Profiwerkzeug, neu und mit Garantie',
+    heroTitle: 'Die Marken der Profis,\nzum europäischen Marktpreis.',
     heroBody:
-      'Kettensägen, Freischneider und Motorgeräte. Neugeräte mit Herstellergarantie und Gebrauchtmaschinen, Bauteil für Bauteil geprüft — Versand nach Deutschland und Frankreich.',
+      'Bosch Professional, Makita, DeWalt, Festool, Metabo, STIHL, Husqvarna und Tormek. Elektrowerkzeuge, Gartengeräte und Werkstattmaschinen, Versand aus Frankreich nach Belgien, Deutschland und Österreich.',
     heroCta: 'Katalog durchsuchen',
     heroCtaSecondary: 'Elektrowerkzeuge',
     dealsTitle: 'Aktuelle Gebrauchtmaschinen',
@@ -45,10 +45,10 @@ export const de: Dictionary = {
     trust: {
       shippingTitle: 'Schneller Versand in 24 Std.',
       shippingBody: 'Versand in 24 Werkstunden. Sendungsverfolgung per Bestellnummer.',
-      checkedTitle: 'Geprüfte Gebrauchtmaschinen',
-      checkedBody: 'Kompression, Kettenbremse, Schmierung. 3 bis 6 Monate Garantie.',
+      checkedTitle: 'Herstellergarantie',
+      checkedBody: 'Originalneuware vom Hersteller, Herstellergarantie, mit Rechnung.',
       paymentTitle: 'Karte oder Überweisung',
-      paymentBody: 'Sichere Kartenzahlung über Stripe oder SEPA-Überweisung ohne Gebühren.',
+      paymentBody: 'SEPA-Überweisung ohne Gebühren. Die Kartenzahlung folgt in Kürze.',
       adviceTitle: 'Technische Beratung',
       adviceBody: 'Fragen zu einem Modell? Schreiben Sie uns, Antwort innerhalb von 24 Stunden.',
       bandLabel: 'Unsere Zusagen',
@@ -199,10 +199,10 @@ export const de: Dictionary = {
     },
     guarantees: {
       title: 'Was garantiert ist',
-      warranty: '2 Jahre Garantie auf Neugeräte, 3 bis 6 Monate auf Gebrauchtmaschinen',
+      warranty: '2 Jahre Herstellergarantie auf das gesamte Sortiment',
       withdrawal: '14 Tage Widerrufsrecht (§ 355 BGB)',
-      shipping: 'Versandkostenfrei nach Deutschland und Frankreich',
-      checked: 'Jede Maschine vor dem Versand Stück für Stück geprüft',
+      shipping: 'Lieferung nach Deutschland, Österreich, Frankreich und Belgien',
+      checked: 'Originalneuware, mit Rechnung und werkseitig versiegelt',
     },
     summary: {
       title: 'Übersicht',
@@ -320,7 +320,7 @@ export const de: Dictionary = {
       passwordHint: 'Mindestens 10 Zeichen, mit Groß-, Kleinbuchstabe und Ziffer.',
       phone: 'Telefon (optional)',
       company: 'Firma (optional)',
-      marketing: 'Ich möchte Benachrichtigungen zu neuen Gebrauchtmaschinen erhalten.',
+      marketing: 'Ich möchte über Neuheiten und Nachschub informiert werden.',
       submit: 'Konto erstellen',
       hasAccount: 'Bereits ein Konto?',
     },
@@ -460,7 +460,7 @@ export const de: Dictionary = {
   footer: {
     aboutTitle: 'Dravik',
     aboutBody:
-      'Unabhängiger Händler für Forst- und Gartentechnik, neu und gebraucht. Lieferung nach Deutschland und Frankreich.',
+      'Unabhängiger Händler für Profiwerkzeug, Gartengeräte und Werkstattmaschinen. Ausschließlich Neugeräte, Versand aus Frankreich nach Belgien, Deutschland und Österreich.',
     shopTitle: 'Shop',
     helpTitle: 'Hilfe',
     legalTitle: 'Informationen',

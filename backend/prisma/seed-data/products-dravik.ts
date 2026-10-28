@@ -2092,7 +2092,7 @@ export const DRAVIK_PRODUCTS: ProductSeed[] = [
     weightGrams: 6200,
     images: [
       {
-        url: '/produits/dravik/stihl-ms-500i-tronconneuse-thermique.webp',
+        url: '/produits/dravik/attente/stihl-ms-500i-tronconneuse-thermique.webp',
         altFr: 'STIHL MS 500i — Tronçonneuse thermique',
         altDe: 'STIHL MS 500i — Benzin-Kettensäge',
       },

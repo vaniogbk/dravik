@@ -91,7 +91,9 @@ function hasRealPhoto(item: FeedItem): boolean {
   const first = item.images[0];
   if (!first) return false;
   if (first.toLowerCase().endsWith('.svg')) return false;
-  // Dossier des visuels générés.
+  // Sous-dossier des vignettes d'attente : une référence sans photographie.
+  if (first.startsWith('/produits/dravik/attente/')) return false;
+  // Dossier des visuels générés (ancien nom, conservé pour l'historique).
   return !first.startsWith('/produits/neuf/');
 }
 

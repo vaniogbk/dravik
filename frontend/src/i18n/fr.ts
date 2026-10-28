@@ -198,10 +198,10 @@ export const fr = {
     },
     guarantees: {
       title: 'Ce qui est garanti',
-      warranty: 'Garantie 2 ans sur le neuf, 3 à 6 mois sur l’occasion',
+      warranty: 'Garantie constructeur 2 ans sur tout le catalogue',
       withdrawal: '14 jours pour changer d’avis (art. L221-18)',
-      shipping: 'Livraison offerte en France et en Allemagne',
-      checked: 'Machines contrôlées pièce par pièce avant expédition',
+      shipping: 'Livraison en France, en Belgique, en Allemagne et en Autriche',
+      checked: 'Matériel neuf d’origine, facturé et scellé d’usine',
     },
     summary: {
       title: 'Récapitulatif',
@@ -319,7 +319,7 @@ export const fr = {
       passwordHint: '10 caractères minimum, avec une majuscule, une minuscule et un chiffre.',
       phone: 'Téléphone (facultatif)',
       company: 'Société (facultatif)',
-      marketing: 'Je souhaite recevoir les alertes sur les nouvelles occasions.',
+      marketing: 'Je souhaite être averti des nouveautés et des réassorts.',
       submit: 'Créer mon compte',
       hasAccount: 'Déjà un compte ?',
     },
@@ -459,7 +459,7 @@ export const fr = {
   footer: {
     aboutTitle: 'Dravik',
     aboutBody:
-      'Revendeur indépendant de matériel forestier et d’espaces verts, neuf et occasion. Livraison en France métropolitaine et en Allemagne.',
+      'Revendeur indépendant d’outillage professionnel, de matériel de jardin et de machines d’atelier. Uniquement du neuf, expédié de France vers la Belgique, l’Allemagne et l’Autriche.',
     shopTitle: 'Boutique',
     helpTitle: 'Aide',
     legalTitle: 'Informations',
