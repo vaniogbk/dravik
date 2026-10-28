@@ -304,6 +304,8 @@ export const fr = {
     },
     awaitingTransfer:
       'Dès que votre virement est parti, déposez le justificatif ci-dessous : votre commande passe aussitôt en préparation.',
+    awaitingTransferNoUpload:
+      'Votre commande est enregistrée. Elle passe en préparation dès réception de votre virement.',
 
     proof: {
       title: 'Justificatif de virement',

@@ -304,6 +304,8 @@ export const de: Dictionary = {
     },
     awaitingTransfer:
       'Sobald Ihre Überweisung raus ist, laden Sie unten den Beleg hoch: Ihre Bestellung geht dann sofort in Vorbereitung.',
+    awaitingTransferNoUpload:
+      'Ihre Bestellung ist erfasst. Sie geht in Vorbereitung, sobald Ihre Überweisung eingeht.',
 
     proof: {
       title: 'Überweisungsbeleg',

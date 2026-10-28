@@ -209,7 +209,11 @@ function TrackedOrderView({
         </div>
       </div>
 
-      <Timeline status={order.status} locale={locale} />
+      <Timeline
+        status={order.status}
+        locale={locale}
+        canUploadProof={Boolean(proofs) && payment.method === 'BANK_TRANSFER'}
+      />
 
       {/* Une fois la commande partie, réclamer le virement n'a plus de sens,
           même si l'encaissement n'est pas encore pointé sur le relevé. */}
@@ -364,7 +368,16 @@ function TrackedOrderView({
  * Avant la première étape (virement pas encore justifié), le trait reste
  * éteint : annoncer « en préparation » à ce moment-là serait faux.
  */
-export function Timeline({ status, locale }: { status: string; locale: Locale }) {
+export function Timeline({
+  status,
+  locale,
+  canUploadProof = false,
+}: {
+  status: string;
+  locale: Locale;
+  /** Renvoie au champ de dépôt : ne le promettre que s'il est affiché. */
+  canUploadProof?: boolean;
+}) {
   const t = getDictionary(locale);
   const steps = ['PREPARING', 'SHIPPED', 'DELIVERED'] as const;
 
@@ -413,7 +426,9 @@ export function Timeline({ status, locale }: { status: string; locale: Locale })
       >
         {started
           ? t.tracking.stageMessage[steps[current]]
-          : t.tracking.awaitingTransfer}
+          : canUploadProof
+            ? t.tracking.awaitingTransfer
+            : t.tracking.awaitingTransferNoUpload}
       </p>
     </div>
   );
