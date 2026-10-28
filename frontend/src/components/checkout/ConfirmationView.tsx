@@ -18,6 +18,10 @@ import { getDictionary, interpolate } from '@/i18n';
 import { formatDate, formatIban, formatPrice } from '@/lib/format';
 import { path, type Locale } from '@/lib/routes';
 import type { BankTransferInstructions, OrderSummary } from '@/lib/api';
+import {
+  TransferProofUpload,
+  type ExistingProof,
+} from '@/components/tracking/TransferProofUpload';
 
 interface Props {
   locale: Locale;
@@ -31,9 +35,10 @@ interface Props {
     imageUrl: string | null;
   }>;
   payment: { method: 'BANK_TRANSFER'; instructions: BankTransferInstructions } | { method: 'CARD' };
+  proofs: ExistingProof[];
 }
 
-export function ConfirmationView({ locale, order, items, payment }: Props) {
+export function ConfirmationView({ locale, order, items, payment, proofs }: Props) {
   const t = getDictionary(locale);
   const clear = useCart((s) => s.clear);
 
@@ -95,7 +100,12 @@ export function ConfirmationView({ locale, order, items, payment }: Props) {
       </section>
 
       {payment.method === 'BANK_TRANSFER' && (
-        <TransferPanel locale={locale} instructions={payment.instructions} />
+        <TransferPanel
+          locale={locale}
+          instructions={payment.instructions}
+          order={order}
+          proofs={proofs}
+        />
       )}
 
       <section className="card mt-8 p-6">
@@ -228,9 +238,13 @@ function CopyButton({
 function TransferPanel({
   locale,
   instructions,
+  order,
+  proofs,
 }: {
   locale: Locale;
   instructions: BankTransferInstructions;
+  order: OrderSummary;
+  proofs: ExistingProof[];
 }) {
   const t = getDictionary(locale);
 
@@ -322,6 +336,17 @@ function TransferPanel({
         <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-signal" aria-hidden="true" />
         {t.confirmation.transferWarning}
       </p>
+
+      {/* Le dépôt est sous les coordonnées, pas ailleurs : le client vient de
+          faire son virement, c'est là qu'il a le justificatif sous la main. */}
+      <div className="print:hidden">
+        <TransferProofUpload
+          locale={locale}
+          orderNumber={order.orderNumber}
+          email={order.email}
+          proofs={proofs}
+        />
+      </div>
     </section>
   );
 }

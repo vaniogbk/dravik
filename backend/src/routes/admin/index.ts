@@ -17,6 +17,14 @@ export const adminRouter = Router();
 
 adminRouter.use(requireAdmin);
 
+// Rien de ce que sert le back-office ne doit être mis en cache : le
+// navigateur réaffichait la liste des commandes telle qu'avant la
+// modification qu'on venait de faire. Sans en-tête, il décide seul.
+adminRouter.use((_req, res, next) => {
+  res.setHeader('Cache-Control', 'no-store, must-revalidate');
+  next();
+});
+
 adminRouter.use('/products', adminProductsRouter);
 adminRouter.use('/orders', adminOrdersRouter);
 adminRouter.use('/customers', adminCustomersRouter);

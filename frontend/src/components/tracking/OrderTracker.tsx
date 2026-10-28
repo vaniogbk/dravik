@@ -17,6 +17,7 @@ import { getDictionary } from '@/i18n';
 import { formatDate, formatIban, formatPrice } from '@/lib/format';
 import { path, type Locale } from '@/lib/routes';
 import { cn } from '@/lib/cn';
+import { TransferProofUpload, type ExistingProof } from './TransferProofUpload';
 
 interface TrackedOrder {
   order: OrderSummary;
@@ -36,6 +37,7 @@ interface TrackedOrder {
     shippedAt: string | null;
     deliveredAt: string | null;
   }>;
+  proofs: ExistingProof[];
   payment:
     | { method: 'BANK_TRANSFER'; instructions: BankTransferInstructions }
     | { method: 'CARD' };
@@ -53,16 +55,28 @@ export function OrderTracker({ locale }: { locale: Locale }) {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
+  const fetchOrder = () =>
+    apiFetch<TrackedOrder>(
+      `/api/checkout/orders/${encodeURIComponent(orderNumber.trim().toUpperCase())}?email=${encodeURIComponent(email.trim())}`,
+      { cache: 'no-store' },
+    );
+
+  // Après le dépôt d'un justificatif, l'étape a changé côté serveur : on
+  // recharge plutôt que de deviner le nouvel état côté navigateur.
+  async function reload() {
+    try {
+      setResult(await fetchOrder());
+    } catch {
+      /* la vue courante reste affichée : rien de pire qu'un écran vidé */
+    }
+  }
+
   async function search(event: React.FormEvent) {
     event.preventDefault();
     setLoading(true);
     setError(null);
     try {
-      const data = await apiFetch<TrackedOrder>(
-        `/api/checkout/orders/${encodeURIComponent(orderNumber.trim().toUpperCase())}?email=${encodeURIComponent(email.trim())}`,
-        { cache: 'no-store' },
-      );
-      setResult(data);
+      setResult(await fetchOrder());
     } catch (err) {
       // Le message d'erreur est volontairement identique que la commande
       // n'existe pas ou que l'e-mail ne corresponde pas : sinon le formulaire
@@ -79,6 +93,7 @@ export function OrderTracker({ locale }: { locale: Locale }) {
       <TrackedOrderView
         locale={locale}
         data={result}
+        onReload={reload}
         onReset={() => {
           setResult(null);
           setError(null);
@@ -154,13 +169,15 @@ function TrackedOrderView({
   locale,
   data,
   onReset,
+  onReload,
 }: {
   locale: Locale;
   data: TrackedOrder;
   onReset: () => void;
+  onReload: () => void;
 }) {
   const t = getDictionary(locale);
-  const { order, items, shipments, payment } = data;
+  const { order, items, shipments, payment, proofs } = data;
   const shipment = shipments[0];
 
   return (
@@ -193,7 +210,12 @@ function TrackedOrderView({
 
       <Timeline status={order.status} locale={locale} />
 
-      {payment.method === 'BANK_TRANSFER' && order.paymentStatus !== 'SUCCEEDED' && (
+      {/* Une fois la commande partie, réclamer le virement n'a plus de sens,
+          même si l'encaissement n'est pas encore pointé sur le relevé. */}
+      {payment.method === 'BANK_TRANSFER' &&
+        order.paymentStatus !== 'SUCCEEDED' &&
+        order.status !== 'SHIPPED' &&
+        order.status !== 'DELIVERED' && (
         <section className="card mt-8 border-2 border-ink p-6">
           <h2 className="flex items-center gap-2 text-lg font-bold tracking-tight text-ink">
             <Landmark className="h-5 w-5 text-signal" aria-hidden="true" />
@@ -219,6 +241,14 @@ function TrackedOrderView({
               <Row label={t.confirmation.reference} value={payment.instructions.reference} mono emphasis />
             </dl>
           </div>
+
+          <TransferProofUpload
+            locale={locale}
+            orderNumber={order.orderNumber}
+            email={order.email}
+            proofs={proofs}
+            onSubmitted={onReload}
+          />
         </section>
       )}
 
@@ -321,10 +351,19 @@ function TrackedOrderView({
   );
 }
 
-/** Progression de la commande, du paiement à la livraison. */
-function Timeline({ status, locale }: { status: string; locale: Locale }) {
+/**
+ * Progression de la commande : préparation, route, livraison.
+ *
+ * Trois points, un message par point. Le client ne lit pas un état de base
+ * de données, il lit où en est son colis — d'où les libellés et les phrases,
+ * et non le nom technique du statut.
+ *
+ * Avant la première étape (virement pas encore justifié), le trait reste
+ * éteint : annoncer « en préparation » à ce moment-là serait faux.
+ */
+export function Timeline({ status, locale }: { status: string; locale: Locale }) {
   const t = getDictionary(locale);
-  const steps = ['PENDING_PAYMENT', 'PAID', 'SHIPPED', 'DELIVERED'] as const;
+  const steps = ['PREPARING', 'SHIPPED', 'DELIVERED'] as const;
 
   if (status === 'CANCELLED' || status === 'REFUNDED') {
     return (
@@ -334,35 +373,46 @@ function Timeline({ status, locale }: { status: string; locale: Locale }) {
     );
   }
 
-  // PREPARING se situe entre le paiement et l'expédition : on l'affiche au
-  // niveau « payée » pour garder quatre étapes lisibles.
-  const normalized = status === 'PREPARING' ? 'PAID' : status;
-  const current = Math.max(0, steps.indexOf(normalized as (typeof steps)[number]));
+  const current = steps.indexOf(status as (typeof steps)[number]);
+  const started = current >= 0;
 
   return (
-    <ol className="mt-8 grid grid-cols-4 gap-2">
-      {steps.map((step, index) => {
-        const done = index <= current;
-        return (
-          <li key={step} className="flex flex-col gap-2">
-            <span
-              className={cn(
-                'h-1.5 rounded-full transition-colors',
-                done ? 'bg-signal' : 'bg-smoke-200',
-              )}
-            />
-            <span
-              className={cn(
-                'text-xs font-medium leading-tight',
-                index === current ? 'text-ink' : done ? 'text-smoke-500' : 'text-smoke-400',
-              )}
-            >
-              {t.orderStatus[step]}
-            </span>
-          </li>
-        );
-      })}
-    </ol>
+    <div className="mt-8">
+      <ol className="grid grid-cols-3 gap-2">
+        {steps.map((step, index) => {
+          const done = started && index <= current;
+          return (
+            <li key={step} className="flex flex-col gap-2">
+              <span
+                className={cn(
+                  'h-1.5 rounded-full transition-colors',
+                  done ? 'bg-signal' : 'bg-smoke-200',
+                )}
+              />
+              <span
+                className={cn(
+                  'text-xs font-medium leading-tight',
+                  index === current ? 'text-ink' : done ? 'text-smoke-500' : 'text-smoke-400',
+                )}
+              >
+                {t.tracking.stages[step]}
+              </span>
+            </li>
+          );
+        })}
+      </ol>
+
+      <p
+        className={cn(
+          'mt-4 rounded-lg px-4 py-3 text-sm leading-relaxed',
+          started ? 'bg-signal-soft font-medium text-ink' : 'bg-smoke-100 text-smoke-600',
+        )}
+      >
+        {started
+          ? t.tracking.stageMessage[steps[current]]
+          : t.tracking.awaitingTransfer}
+      </p>
+    </div>
   );
 }
 

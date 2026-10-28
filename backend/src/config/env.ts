@@ -44,6 +44,27 @@ const schema = z.object({
   // affichée à la place : le visiteur a toujours un moyen de vous joindre.
   TELEGRAM_BOT_TOKEN: z.string().optional(),
   TELEGRAM_CHAT_ID: z.string().optional(),
+
+  // Envoi d'e-mails (optionnel) : justificatifs de virement reçus et
+  // messages de suivi envoyés au client à chaque étape.
+  //
+  // N'importe quel SMTP convient. Sans ces valeurs, rien n'est envoyé : les
+  // messages sont journalisés en base avec leur motif d'échec, et le
+  // back-office le signale. Mieux vaut un envoi qui manque et qui se voit
+  // qu'un envoi qu'on croit parti.
+  MAIL_HOST: z.string().optional(),
+  MAIL_PORT: z.coerce.number().default(587),
+  /** true pour le port 465 (TLS implicite), false pour 587 (STARTTLS). */
+  MAIL_SECURE: z
+    .enum(['true', 'false'])
+    .default('false')
+    .transform((v) => v === 'true'),
+  MAIL_USER: z.string().optional(),
+  MAIL_PASSWORD: z.string().optional(),
+  /** Expéditeur affiché, ex. « Dravik <contact@exemple.fr> ». */
+  MAIL_FROM: z.string().optional(),
+  /** Boîte qui reçoit les justificatifs de virement. */
+  MAIL_TO_SHOP: z.string().optional(),
 });
 
 const parsed = schema.safeParse(process.env);
@@ -66,6 +87,9 @@ export const env = {
     .filter(Boolean),
   stripeEnabled: Boolean(raw.STRIPE_SECRET_KEY),
   telegramEnabled: Boolean(raw.TELEGRAM_BOT_TOKEN && raw.TELEGRAM_CHAT_ID),
+  mailEnabled: Boolean(raw.MAIL_HOST && raw.MAIL_USER && raw.MAIL_PASSWORD && raw.MAIL_FROM),
+  /** Boîte de la boutique : MAIL_TO_SHOP, à défaut l'expéditeur. */
+  shopMailbox: raw.MAIL_TO_SHOP || raw.MAIL_USER || '',
 };
 
 export type Env = typeof env;

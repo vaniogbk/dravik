@@ -56,6 +56,50 @@ function formatMessage(input: ContactMessage): string {
     : text;
 }
 
+/**
+ * Envoie un document dans la conversation Telegram de la boutique.
+ *
+ * Utilisé pour les justificatifs de virement : la pièce arrive sur le
+ * téléphone en même temps que l'avis, sans attendre une connexion au
+ * back-office. Ne lève pas — c'est un canal d'appoint, pas le canal de
+ * référence, et son échec ne doit pas faire échouer le dépôt du client.
+ */
+export async function sendShopDocument(input: {
+  caption: string;
+  fileName: string;
+  contentType: string;
+  data: Buffer;
+}): Promise<boolean> {
+  if (!env.telegramEnabled) return false;
+
+  const form = new FormData();
+  form.append('chat_id', env.TELEGRAM_CHAT_ID!);
+  // Telegram tronque les légendes au-delà de 1024 caractères.
+  form.append('caption', input.caption.slice(0, 1000));
+  form.append('parse_mode', 'HTML');
+  form.append(
+    'document',
+    new Blob([new Uint8Array(input.data)], { type: input.contentType }),
+    input.fileName,
+  );
+
+  try {
+    const response = await fetch(
+      `https://api.telegram.org/bot${env.TELEGRAM_BOT_TOKEN}/sendDocument`,
+      { method: 'POST', body: form, signal: AbortSignal.timeout(30_000) },
+    );
+    if (!response.ok) {
+      const detail = await response.text().catch(() => '');
+      logger.warn({ status: response.status, detail }, 'Telegram a refusé le document');
+      return false;
+    }
+    return true;
+  } catch (err) {
+    logger.warn({ err }, 'Telegram injoignable pour le document');
+    return false;
+  }
+}
+
 export async function sendContactMessage(input: ContactMessage): Promise<void> {
   if (!env.telegramEnabled) {
     throw new ApiError(

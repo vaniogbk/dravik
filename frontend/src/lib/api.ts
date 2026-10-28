@@ -34,6 +34,11 @@ export async function apiFetch<T>(path: string, options: RequestOptions = {}): P
   const { body, accessToken, revalidate, headers, ...rest } = options;
 
   const response = await fetch(`${apiBase()}${path}`, {
+    // Une réponse authentifiée ne doit jamais sortir d'un cache : le
+    // back-office relisait la liste des commandes juste après l'avoir
+    // modifiée et réaffichait l'état d'avant. L'API ne pose pas d'en-tête
+    // de cache, le navigateur décide alors tout seul.
+    ...(accessToken ? { cache: 'no-store' as const } : {}),
     ...rest,
     headers: {
       ...(body !== undefined ? { 'Content-Type': 'application/json' } : {}),

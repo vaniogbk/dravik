@@ -59,6 +59,15 @@ enum OrderStatus {
   REFUNDED
 }
 
+/// Les trois etapes du suivi montre au client. Elles reprennent des valeurs
+/// d'OrderStatus : le suivi n'invente pas un second etat de commande, il en
+/// donne une lecture a trois points.
+enum DeliveryStage {
+  PREPARING
+  SHIPPED
+  DELIVERED
+}
+
 enum PaymentMethod {
   CARD /// Stripe
   BANK_TRANSFER /// virement SEPA
@@ -376,6 +385,8 @@ model Order {
   shipments      Shipment[]
   stockMovements StockMovement[]
   bankEntries    BankStatementEntry[]
+  transferProofs TransferProof[]
+  notifications  OrderNotification[]
 
   @@index([userId])
   @@index([status])
@@ -507,6 +518,55 @@ model BankStatementEntry {
   @@index([status])
   @@index([orderId])
   @@index([bookedAt])
+}
+
+// ------------------------------------------------- preuve de virement
+
+/// Justificatif de virement deposer par le client depuis sa page de suivi.
+///
+/// Le fichier vit dans la base et non sur le disque : le conteneur est
+/// remplace a chaque deploiement, un fichier ecrit dedans disparaît avec lui.
+model TransferProof {
+  id          String   @id @default(cuid())
+  orderId     String
+  fileName    String
+  contentType String
+  sizeBytes   Int
+  data        Bytes
+  /// Adresse qui a depose le justificatif, telle que saisie au suivi
+  submittedBy String
+  /// Faux tant que la notification a la boutique n'est pas partie
+  notified   Boolean  @default(false)
+  createdAt  DateTime @default(now())
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([orderId])
+  @@index([createdAt])
+}
+
+/// Journal des messages de suivi envoyes au client.
+///
+/// Sans journal, un envoi rate est un envoi perdu : personne ne sait que le
+/// client n'a jamais eu son message. Une ligne par etape et par commande, ce
+/// qui empeche aussi d'envoyer deux fois la meme etape.
+model OrderNotification {
+  id      String        @id @default(cuid())
+  orderId String
+  stage   DeliveryStage
+  /// Destinataire au moment de l'envoi
+  email     String
+  sentAt    DateTime?
+  /// Motif de l'echec, pour pouvoir relancer en connaissance de cause
+  error     String?   @db.Text
+  attempts  Int       @default(0)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@unique([orderId, stage])
+  @@index([sentAt])
 }
 
 // ---------------------------------------------------------------- divers

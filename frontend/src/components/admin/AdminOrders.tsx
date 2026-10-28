@@ -1,14 +1,24 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
-import { Landmark, Search, Truck } from 'lucide-react';
-import { apiFetch, ApiError } from '@/lib/api';
+import { FileCheck2, Landmark, Package, Search, Truck } from 'lucide-react';
+import { apiBase, apiFetch, ApiError } from '@/lib/api';
 import { getDictionary } from '@/i18n';
 import { formatDateTime, formatPrice } from '@/lib/format';
 import type { Locale } from '@/lib/routes';
 import { cn } from '@/lib/cn';
 
 const CARRIERS = ['DPD', 'DHL', 'Chronopost', 'GLS', 'Schenker'] as const;
+
+/** Les trois etapes du suivi, dans l'ordre ou le client les voit. */
+const STAGES = ['PREPARING', 'SHIPPED', 'DELIVERED'] as const;
+type Stage = (typeof STAGES)[number];
+
+interface BulkResult {
+  updated: number;
+  failed: number;
+  emailsSent: number;
+}
 
 interface AdminOrder {
   id: string;
@@ -24,6 +34,8 @@ interface AdminOrder {
   bankTransferRef: string | null;
   items: Array<{ id: string; name: string; sku: string; quantity: number }>;
   shipments: Array<{ id: string; carrier: string; trackingNumber: string | null; status: string }>;
+  transferProofs?: Array<{ id: string; fileName: string; contentType: string; createdAt: string }>;
+  notifications?: Array<{ stage: Stage; sentAt: string | null; error: string | null }>;
 }
 
 export function AdminOrders({ locale, accessToken }: { locale: Locale; accessToken: string }) {
@@ -38,6 +50,8 @@ export function AdminOrders({ locale, accessToken }: { locale: Locale; accessTok
   const [shipping, setShipping] = useState<{ orderId: string; carrier: string; tracking: string } | null>(
     null,
   );
+  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [bulk, setBulk] = useState<BulkResult | null>(null);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -50,6 +64,10 @@ export function AdminOrders({ locale, accessToken }: { locale: Locale; accessTok
         { accessToken },
       );
       setItems(data.items);
+      // Une commande sortie du filtre ne doit pas rester selectionnee
+      // invisiblement : l'action suivante la toucherait sans qu'on la voie.
+      const visibles = new Set(data.items.map((o) => o.id));
+      setSelected((s) => new Set([...s].filter((id) => visibles.has(id))));
       setError(null);
     } catch (err) {
       setError(err instanceof ApiError ? err.message : t.common.error);
@@ -84,6 +102,73 @@ export function AdminOrders({ locale, accessToken }: { locale: Locale; accessTok
         body: {},
       }),
     );
+
+  function toggle(id: string) {
+    setSelected((s) => {
+      const next = new Set(s);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+    setBulk(null);
+  }
+
+  /** Marque la selection a une etape et previent chaque client. */
+  async function applyStage(stage: Stage) {
+    setBusy('bulk');
+    setError(null);
+    setBulk(null);
+    try {
+      const result = await apiFetch<BulkResult>('/api/admin/orders/bulk-status', {
+        method: 'POST',
+        accessToken,
+        body: { orderIds: [...selected], status: stage },
+      });
+      setBulk(result);
+      setSelected(new Set());
+      await load();
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : t.common.error);
+    } finally {
+      setBusy(null);
+    }
+  }
+
+  /**
+   * Le justificatif est servi par une route authentifiee : un lien ordinaire
+   * n'emporterait pas le jeton. On recupere donc le fichier, puis on le
+   * remet au navigateur par un lien de telechargement.
+   *
+   * Pas de `window.open` : apres un `await`, le navigateur ne considere plus
+   * l'appel comme declenche par le clic et bloque la fenetre sans rien dire.
+   */
+  async function downloadProof(order: AdminOrder) {
+    const proof = order.transferProofs?.[0];
+    if (!proof) return;
+
+    setBusy(order.id);
+    setError(null);
+    try {
+      const response = await fetch(
+        `${apiBase()}/api/admin/orders/${order.id}/proofs/${proof.id}`,
+        { headers: { Authorization: `Bearer ${accessToken}` } },
+      );
+      if (!response.ok) throw new ApiError(response.status, 'PROOF', t.common.error);
+
+      const url = URL.createObjectURL(await response.blob());
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = proof.fileName;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : t.common.error);
+    } finally {
+      setBusy(null);
+    }
+  }
 
   const submitShipment = (event: React.FormEvent) => {
     event.preventDefault();
@@ -129,6 +214,65 @@ export function AdminOrders({ locale, accessToken }: { locale: Locale; accessTok
         </select>
       </div>
 
+      {/* Barre d'action sur la selection : c'est le geste courant au retour
+          du releve bancaire, une dizaine de commandes passees d'un coup. */}
+      {items.length > 0 && (
+        <div className="mb-4 flex flex-wrap items-center gap-3 rounded-card border border-smoke-200 bg-canvas-raised p-3">
+          <label className="flex items-center gap-2 text-sm text-smoke-600">
+            <input
+              type="checkbox"
+              checked={selected.size > 0 && selected.size === items.length}
+              onChange={(e) =>
+                setSelected(e.target.checked ? new Set(items.map((o) => o.id)) : new Set())
+              }
+              className="h-4 w-4 rounded border-smoke-300 text-signal focus:ring-signal"
+            />
+            {t.admin.stage.selectAll}
+          </label>
+
+          <span className="text-sm font-medium text-ink">
+            {t.admin.stage.selected.replace('{count}', String(selected.size))}
+          </span>
+
+          <span className="ml-auto flex flex-wrap items-center gap-2">
+            <span className="text-xs font-medium uppercase tracking-wide text-smoke-400">
+              {t.admin.stage.legend}
+            </span>
+            {STAGES.map((stage) => (
+              <button
+                key={stage}
+                type="button"
+                disabled={selected.size === 0 || busy === 'bulk'}
+                onClick={() => void applyStage(stage)}
+                className={cn('btn btn-sm', stage === 'DELIVERED' ? 'btn-dark' : 'btn-outline')}
+              >
+                {stage === 'PREPARING' && <Package className="h-3.5 w-3.5" />}
+                {stage === 'SHIPPED' && <Truck className="h-3.5 w-3.5" />}
+                {stage === 'DELIVERED' && <FileCheck2 className="h-3.5 w-3.5" />}
+                {t.admin.stage[stage]}
+              </button>
+            ))}
+          </span>
+        </div>
+      )}
+
+      {bulk && (
+        <p
+          role="status"
+          className={cn(
+            'mb-4 rounded-lg px-4 py-3 text-sm',
+            bulk.emailsSent === 0 && bulk.updated > 0
+              ? 'bg-signal-soft font-medium text-signal-text'
+              : 'bg-emerald-50 font-medium text-emerald-800',
+          )}
+        >
+          {t.admin.stage.done
+            .replace('{updated}', String(bulk.updated))
+            .replace('{emails}', String(bulk.emailsSent))}
+          {bulk.emailsSent === 0 && bulk.updated > 0 && ` ${t.admin.stage.mailOff}`}
+        </p>
+      )}
+
       {error && <p className="mb-4 text-sm text-signal">{error}</p>}
 
       {loading && items.length === 0 && (
@@ -150,9 +294,20 @@ export function AdminOrders({ locale, accessToken }: { locale: Locale; accessTok
             order.status !== 'CANCELLED';
 
           return (
-            <li key={order.id} className="card p-5">
+            <li
+              key={order.id}
+              className={cn('card p-5', selected.has(order.id) && 'ring-2 ring-signal')}
+            >
               <div className="flex flex-wrap items-start justify-between gap-4">
-                <div className="min-w-0">
+                <div className="flex min-w-0 gap-3">
+                  <input
+                    type="checkbox"
+                    checked={selected.has(order.id)}
+                    onChange={() => toggle(order.id)}
+                    aria-label={order.orderNumber}
+                    className="mt-1 h-4 w-4 shrink-0 rounded border-smoke-300 text-signal focus:ring-signal"
+                  />
+                  <div className="min-w-0">
                   <div className="flex flex-wrap items-center gap-2">
                     <span className="text-base font-bold tabular text-ink">{order.orderNumber}</span>
                     <span
@@ -193,6 +348,32 @@ export function AdminOrders({ locale, accessToken }: { locale: Locale; accessTok
                         : ''}
                     </p>
                   )}
+
+                  {/* Le justificatif est le signal qui declenche la
+                      verification du releve : il doit se voir dans la liste. */}
+                  {(order.transferProofs?.length ?? 0) > 0 && (
+                    <button
+                      type="button"
+                      disabled={busy === order.id}
+                      onClick={() => void downloadProof(order)}
+                      className="mt-2 inline-flex items-center gap-1.5 text-xs font-semibold text-signal-text hover:underline"
+                    >
+                      <FileCheck2 className="h-3.5 w-3.5" />
+                      {t.admin.stage.proofCount.replace(
+                        '{count}',
+                        String(order.transferProofs?.length ?? 0),
+                      )}
+                      {' · '}
+                      {t.admin.stage.openProof}
+                    </button>
+                  )}
+
+                  {order.notifications?.some((n) => !n.sentAt) && (
+                    <p className="mt-1.5 text-xs font-medium text-signal-text">
+                      {t.admin.stage.mailOff}
+                    </p>
+                  )}
+                  </div>
                 </div>
 
                 <div className="flex shrink-0 flex-col items-end gap-3">

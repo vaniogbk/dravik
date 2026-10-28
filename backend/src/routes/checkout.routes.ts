@@ -1,10 +1,11 @@
-import { Router } from 'express';
+import express, { Router } from 'express';
 import rateLimit from 'express-rate-limit';
 import { z } from 'zod';
 import { asyncHandler, validate } from '../middleware/validate.js';
 import { optionalAuth } from '../middleware/auth.js';
 import * as orderService from '../services/order.service.js';
 import * as paymentService from '../services/payment.service.js';
+import * as proofService from '../services/proof.service.js';
 import * as shippingService from '../services/shipping.service.js';
 import { prisma } from '../lib/prisma.js';
 import { ApiError } from '../lib/errors.js';
@@ -158,6 +159,12 @@ checkoutRouter.get(
       order: publicOrder(order),
       items: order.items,
       shipments: order.shipments,
+      // Le client doit voir ce qu'il a déjà déposé, sinon il redépose.
+      proofs: (await proofService.listProofs(order.id)).map((p) => ({
+        fileName: p.fileName,
+        sizeBytes: p.sizeBytes,
+        createdAt: p.createdAt,
+      })),
       payment:
         order.paymentMethod === 'BANK_TRANSFER'
           ? {
@@ -166,6 +173,51 @@ checkoutRouter.get(
             }
           : { method: 'CARD' },
     });
+  }),
+);
+
+/**
+ * Dépôt d'un justificatif de virement.
+ *
+ * Le corps est le fichier lui-même : pas de multipart, donc pas de
+ * dépendance supplémentaire ni de parseur à surveiller. Le type est porté
+ * par `Content-Type`, le reste par la chaîne de requête.
+ *
+ * `express.raw` est monté ici et non globalement : partout ailleurs, un
+ * corps binaire de 10 Mo n'aurait aucune raison d'être accepté.
+ */
+checkoutRouter.post(
+  '/orders/:orderNumber/proof',
+  rateLimit({ windowMs: 60 * 60_000, limit: 10, standardHeaders: 'draft-7' }),
+  express.raw({ type: [...proofService.ACCEPTED_TYPES], limit: proofService.MAX_BYTES }),
+  validate(z.object({ email: z.string().email() }), 'query'),
+  asyncHandler(async (req, res) => {
+    const { email } = req.query as { email: string };
+
+    // Même formulation d'erreur que le suivi : sinon le dépôt permettrait
+    // de deviner quels numéros de commande existent.
+    const order = await prisma.order.findUnique({
+      where: { orderNumber: req.params.orderNumber.trim().toUpperCase() },
+    });
+    if (!order || order.email !== email.toLowerCase().trim()) {
+      throw ApiError.notFound('Commande introuvable');
+    }
+
+    if (!Buffer.isBuffer(req.body)) {
+      throw ApiError.badRequest(
+        'Format non accepté. Déposez un PDF ou une photo (JPEG, PNG, WebP, HEIC).',
+        'UNSUPPORTED_FILE_TYPE',
+      );
+    }
+
+    const result = await proofService.submitProof({
+      order,
+      contentType: (req.header('content-type') ?? '').split(';')[0].trim(),
+      data: req.body,
+      submittedBy: email.toLowerCase().trim(),
+    });
+
+    res.status(201).json(result);
   }),
 );
 

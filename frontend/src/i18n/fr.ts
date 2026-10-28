@@ -290,6 +290,37 @@ export const fr = {
     helpTitle: 'Vous ne retrouvez pas votre numéro ?',
     helpBody:
       'Il vous a été affiché juste après la validation de votre commande. Si vous ne l’avez pas noté, écrivez-nous avec votre nom, votre adresse e-mail et la date d’achat : nous le retrouvons.',
+
+    /** Les trois étapes du suivi, et le message lu par le client à chacune. */
+    stages: {
+      PREPARING: 'En préparation',
+      SHIPPED: 'En route',
+      DELIVERED: 'Livrée',
+    },
+    stageMessage: {
+      PREPARING: 'Votre commande est en préparation auprès du fournisseur. Merci de patienter !',
+      SHIPPED: 'Votre commande est déjà en route vers votre adresse.',
+      DELIVERED: 'Votre commande est arrivée à votre adresse. Merci pour l’achat.',
+    },
+    awaitingTransfer:
+      'Dès que votre virement est parti, déposez le justificatif ci-dessous : votre commande passe aussitôt en préparation.',
+
+    proof: {
+      title: 'Justificatif de virement',
+      intro:
+        'Capture d’écran, reçu de votre banque ou photo de l’ordre : déposez-le ici. Il nous parvient immédiatement et votre commande passe en préparation.',
+      choose: 'Choisir un fichier',
+      formats: 'PDF ou photo (JPEG, PNG, WebP, HEIC), 10 Mo au maximum.',
+      submit: 'Envoyer le justificatif',
+      sending: 'Envoi en cours…',
+      sent: 'Justificatif reçu. Votre commande est en préparation.',
+      alreadySent: 'Justificatif déjà déposé le {date}.',
+      tooLarge: 'Fichier trop lourd : 10 Mo au maximum.',
+      wrongType: 'Format non accepté. Déposez un PDF ou une photo.',
+      failed: 'L’envoi n’a pas abouti. Réessayez, ou écrivez-nous.',
+      notice:
+        'Le justificatif ne remplace pas le virement : la commande part quand les fonds sont crédités.',
+    },
   },
 
   account: {
@@ -386,6 +417,24 @@ export const fr = {
     cancel: 'Annuler',
     pendingBankEntries: 'Virements à traiter',
 
+    /** Suivi : trois étapes, applicables à une sélection de commandes. */
+    stage: {
+      legend: 'Marquer la sélection comme',
+      PREPARING: 'En préparation',
+      SHIPPED: 'En route',
+      DELIVERED: 'Livrée',
+      selected: '{count} commande(s) sélectionnée(s)',
+      selectAll: 'Tout sélectionner',
+      clear: 'Vider la sélection',
+      done: '{updated} commande(s) mise(s) à jour, {emails} avis envoyé(s) au client.',
+      mailOff:
+        'Aucun avis n’est parti : l’envoi d’e-mails n’est pas configuré sur le serveur. Les commandes ont bien changé d’étape.',
+      proof: 'Justificatif',
+      proofCount: '{count} justificatif(s)',
+      noProof: 'Aucun justificatif',
+      openProof: 'Télécharger le justificatif',
+    },
+
     bankAccount: {
       title: 'Compte destinataire des virements',
       intro:
@@ -468,7 +517,7 @@ export const fr = {
     terms: 'Conditions générales de vente',
     legal: 'Mentions légales',
     privacy: 'Confidentialité',
-    paymentMethods: 'Paiement sécurisé par carte ou virement SEPA',
+    paymentMethods: 'Virement SEPA sans frais. Le paiement par carte arrive prochainement.',
     rights: 'Tous droits réservés.',
     disclaimer:
       'Dravik est un revendeur indépendant. Les marques citées appartiennent à leurs propriétaires respectifs et sont utilisées à des fins de description des produits proposés.',

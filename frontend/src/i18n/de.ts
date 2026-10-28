@@ -291,6 +291,36 @@ export const de: Dictionary = {
     helpTitle: 'Sie finden Ihre Bestellnummer nicht?',
     helpBody:
       'Sie wurde Ihnen direkt nach dem Abschluss der Bestellung angezeigt. Falls Sie sie nicht notiert haben, schreiben Sie uns mit Namen, E-Mail-Adresse und Kaufdatum — wir finden sie wieder.',
+
+    stages: {
+      PREPARING: 'In Vorbereitung',
+      SHIPPED: 'Unterwegs',
+      DELIVERED: 'Zugestellt',
+    },
+    stageMessage: {
+      PREPARING: 'Ihre Bestellung wird beim Lieferanten vorbereitet. Bitte haben Sie etwas Geduld!',
+      SHIPPED: 'Ihre Bestellung ist bereits zu Ihrer Adresse unterwegs.',
+      DELIVERED: 'Ihre Bestellung ist an Ihrer Adresse angekommen. Danke für Ihren Einkauf.',
+    },
+    awaitingTransfer:
+      'Sobald Ihre Überweisung raus ist, laden Sie unten den Beleg hoch: Ihre Bestellung geht dann sofort in Vorbereitung.',
+
+    proof: {
+      title: 'Überweisungsbeleg',
+      intro:
+        'Screenshot, Bankbeleg oder Foto des Auftrags — laden Sie ihn hier hoch. Er erreicht uns sofort und Ihre Bestellung geht in Vorbereitung.',
+      choose: 'Datei wählen',
+      formats: 'PDF oder Foto (JPEG, PNG, WebP, HEIC), höchstens 10 MB.',
+      submit: 'Beleg senden',
+      sending: 'Wird gesendet…',
+      sent: 'Beleg erhalten. Ihre Bestellung wird vorbereitet.',
+      alreadySent: 'Beleg bereits am {date} hochgeladen.',
+      tooLarge: 'Datei zu groß: höchstens 10 MB.',
+      wrongType: 'Format nicht zulässig. Laden Sie ein PDF oder ein Foto hoch.',
+      failed: 'Das Senden hat nicht geklappt. Versuchen Sie es erneut oder schreiben Sie uns.',
+      notice:
+        'Der Beleg ersetzt die Überweisung nicht: versendet wird, sobald das Geld gutgeschrieben ist.',
+    },
   },
 
   account: {
@@ -387,6 +417,23 @@ export const de: Dictionary = {
     cancel: 'Abbrechen',
     pendingBankEntries: 'Offene Überweisungen',
 
+    stage: {
+      legend: 'Auswahl markieren als',
+      PREPARING: 'In Vorbereitung',
+      SHIPPED: 'Unterwegs',
+      DELIVERED: 'Zugestellt',
+      selected: '{count} Bestellung(en) ausgewählt',
+      selectAll: 'Alle auswählen',
+      clear: 'Auswahl aufheben',
+      done: '{updated} Bestellung(en) aktualisiert, {emails} Benachrichtigung(en) verschickt.',
+      mailOff:
+        'Es wurde keine Benachrichtigung verschickt: Der E-Mail-Versand ist auf dem Server nicht eingerichtet. Die Bestellungen wurden trotzdem umgestellt.',
+      proof: 'Beleg',
+      proofCount: '{count} Beleg(e)',
+      noProof: 'Kein Beleg',
+      openProof: 'Beleg herunterladen',
+    },
+
     bankAccount: {
       title: 'Empfängerkonto für Überweisungen',
       intro:
@@ -469,7 +516,7 @@ export const de: Dictionary = {
     terms: 'Allgemeine Geschäftsbedingungen',
     legal: 'Impressum',
     privacy: 'Datenschutz',
-    paymentMethods: 'Sichere Zahlung per Karte oder SEPA-Überweisung',
+    paymentMethods: 'SEPA-Überweisung ohne Gebühren. Die Kartenzahlung folgt in Kürze.',
     rights: 'Alle Rechte vorbehalten.',
     disclaimer:
       'Dravik ist ein unabhängiger Händler. Genannte Marken gehören ihren jeweiligen Inhabern und werden ausschließlich zur Beschreibung der angebotenen Produkte verwendet.',

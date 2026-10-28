@@ -5,6 +5,8 @@ import { prisma } from '../../lib/prisma.js';
 import { ApiError } from '../../lib/errors.js';
 import * as orderService from '../../services/order.service.js';
 import * as paymentService from '../../services/payment.service.js';
+import * as proofService from '../../services/proof.service.js';
+import * as notifyService from '../../services/order-notify.service.js';
 import { buildTrackingUrl } from '../../services/shipping.service.js';
 
 export const adminOrdersRouter = Router();
@@ -58,6 +60,15 @@ adminOrdersRouter.get(
           items: true,
           shipments: true,
           user: { select: { id: true, firstName: true, lastName: true, email: true } },
+          // La liste doit montrer d'un coup d'œil qui a déposé son
+          // justificatif : c'est le signal qui déclenche la vérification.
+          // Les identifiants viennent avec, pour que l'ouverture du fichier
+          // ne demande pas un second aller-retour.
+          transferProofs: {
+            orderBy: { createdAt: 'desc' as const },
+            select: { id: true, fileName: true, contentType: true, createdAt: true },
+          },
+          notifications: { select: { stage: true, sentAt: true, error: true } },
         },
       }),
     ]);
@@ -85,6 +96,7 @@ adminOrdersRouter.get(
 
     res.json({
       order,
+      proofs: await proofService.listProofs(order.id),
       payment:
         order.paymentMethod === 'BANK_TRANSFER'
           ? await paymentService.bankTransferInstructions(order)
@@ -115,25 +127,121 @@ adminOrdersRouter.post(
   }),
 );
 
+/**
+ * Les trois étapes montrées au client : en préparation, en route, livrée.
+ *
+ * Le changement d'étape déclenche l'avis au client. Un avis qui n'est pas
+ * parti ne bloque pas l'étape : la commande avance, et `notified` dit ce
+ * qu'il en est, commande par commande.
+ */
+const stageSchema = z.enum(['PREPARING', 'SHIPPED', 'DELIVERED']);
+
+async function applyStage(orderId: string, stage: z.infer<typeof stageSchema>) {
+  const order = await prisma.order.update({
+    where: { id: orderId },
+    data: {
+      status: stage,
+      ...(stage === 'DELIVERED'
+        ? {
+            shipments: {
+              updateMany: { where: {}, data: { status: 'DELIVERED', deliveredAt: new Date() } },
+            },
+          }
+        : {}),
+      ...(stage === 'SHIPPED'
+        ? {
+            shipments: {
+              updateMany: {
+                where: { shippedAt: null },
+                data: { status: 'IN_TRANSIT', shippedAt: new Date() },
+              },
+            },
+          }
+        : {}),
+    },
+    include: { shipments: true },
+  });
+
+  const notified = await notifyService.notifyStage(order, stage);
+  return { order, notified };
+}
+
 adminOrdersRouter.post(
   '/:id/status',
+  validate(z.object({ status: stageSchema })),
+  asyncHandler(async (req, res) => {
+    res.json(await applyStage(req.params.id, req.body.status));
+  }),
+);
+
+/** Même chose sur une sélection : le cas courant au retour du relevé bancaire. */
+adminOrdersRouter.post(
+  '/bulk-status',
   validate(
     z.object({
-      status: z.enum(['PREPARING', 'DELIVERED']),
+      orderIds: z.array(z.string().min(1)).min(1).max(100),
+      status: stageSchema,
     }),
   ),
   asyncHandler(async (req, res) => {
-    const order = await prisma.order.update({
-      where: { id: req.params.id },
-      data: {
-        status: req.body.status,
-        ...(req.body.status === 'DELIVERED'
-          ? { shipments: { updateMany: { where: {}, data: { status: 'DELIVERED', deliveredAt: new Date() } } } }
-          : {}),
-      },
-      include: { shipments: true },
+    const { orderIds, status } = req.body as {
+      orderIds: string[];
+      status: z.infer<typeof stageSchema>;
+    };
+
+    // Séquentiel et non en parallèle : cent envois SMTP simultanés feraient
+    // tomber la connexion, et l'ordre du journal resterait illisible.
+    const results = [];
+    for (const id of orderIds) {
+      try {
+        const { order, notified } = await applyStage(id, status);
+        results.push({
+          id,
+          orderNumber: order.orderNumber,
+          ok: true,
+          emailSent: notified.sent,
+          emailSkipped: notified.skipped,
+          emailError: notified.error ?? null,
+        });
+      } catch (err) {
+        results.push({
+          id,
+          ok: false,
+          error: err instanceof Error ? err.message : 'Échec',
+        });
+      }
+    }
+
+    res.json({
+      status,
+      updated: results.filter((r) => r.ok).length,
+      failed: results.filter((r) => !r.ok).length,
+      emailsSent: results.filter((r) => r.ok && r.emailSent).length,
+      results,
     });
-    res.json({ order });
+  }),
+);
+
+/** Justificatif de virement, servi tel qu'il a été déposé. */
+adminOrdersRouter.get(
+  '/:id/proofs/:proofId',
+  asyncHandler(async (req, res) => {
+    const proof = await proofService.getProofFile(req.params.proofId);
+    if (proof.orderId !== req.params.id) throw ApiError.notFound('Justificatif introuvable');
+
+    res.setHeader('Content-Type', proof.contentType);
+    // `inline` : un PDF ou une photo s'ouvre dans l'onglet, sans téléchargement.
+    res.setHeader('Content-Disposition', `inline; filename="${proof.fileName}"`);
+    res.setHeader('Content-Length', String(proof.sizeBytes));
+    res.send(Buffer.from(proof.data));
+  }),
+);
+
+/** Avis de suivi restés en souffrance, pour que l'échec ne passe pas inaperçu. */
+adminOrdersRouter.get(
+  '/notifications/pending',
+  asyncHandler(async (_req, res) => {
+    res.json({ items: await notifyService.pendingNotifications() });
   }),
 );
 

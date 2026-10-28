@@ -31,6 +31,7 @@ export default async function ConfirmationPage({ params, searchParams }: Props) 
     payment:
       | { method: 'BANK_TRANSFER'; instructions: BankTransferInstructions }
       | { method: 'CARD' };
+    proofs: Array<{ fileName: string; sizeBytes: number; createdAt: string }>;
   } | null = null;
 
   if (email) {
@@ -65,6 +66,7 @@ export default async function ConfirmationPage({ params, searchParams }: Props) 
       order={data.order}
       items={data.items}
       payment={data.payment}
+      proofs={data.proofs ?? []}
     />
   );
 }
